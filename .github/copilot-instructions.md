@@ -119,3 +119,6 @@ You are a Senior Full-Stack Developer and expert in React Native, Expo, Supabase
 
 ## Knowledge Updates
 When working with Supabase, React Query, or authentication patterns, search for the latest documentation and security best practices to ensure implementations follow current standards and handle production-scale requirements. 
+
+## Ultra important
+All text and labels must be in SPANISH only.

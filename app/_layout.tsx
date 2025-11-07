@@ -4,12 +4,16 @@ import { PortalHost } from '@rn-primitives/portal';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from 'nativewind';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
+import {  ThemeProvider } from '@react-navigation/native'
 import { useFonts } from 'expo-font'
 import 'react-native-reanimated'
 import { useAuthContext } from '@/hooks/use-auth-context'
 
+import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import AuthProvider from '@/providers/auth-provider'
+import { QueryProvider } from '@/providers/query-provider';
 import { SplashScreenController } from '@/components/splash-screen-controller';
 export {
   // Catch any errors thrown by the Layout component.
@@ -25,6 +29,7 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Protected guard={!isLoggedIn}>
+        <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
       </Stack.Protected>
       <Stack.Screen name="+not-found" />
@@ -36,14 +41,28 @@ export default function RootLayout() {
   const { colorScheme } = useColorScheme();
 
   return (
+      <GestureHandlerRootView style={styles.container}>
     <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
       <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
+      <QueryProvider>
         <AuthProvider>
-        <SplashScreenController />
-        <RootNavigator />
-       
-      </AuthProvider>
+          <SplashScreenController />
+          <RootNavigator />
+        </AuthProvider>
+      </QueryProvider>
       <PortalHost />
     </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'grey',
+  },
+  contentContainer: {
+    flex: 1,
+    padding: 36,
+    alignItems: 'center',
+  },
+}); 
