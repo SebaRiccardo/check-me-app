@@ -190,7 +190,10 @@ import { UIMessage, useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
 import { useState } from 'react';
 
-export default function Chat({ id, initialMessages }: { id?: string | undefined; initialMessages?: UIMessage[] } = {}) {
+export default function Chat({
+  id,
+  initialMessages,
+}: { id?: string | undefined; initialMessages?: UIMessage[] } = {}) {
   const [input, setInput] = useState('');
   const { sendMessage, messages } = useChat({
     id, // use the provided chat ID
@@ -211,15 +214,19 @@ export default function Chat({ id, initialMessages }: { id?: string | undefined;
   // simplified rendering code, extend as needed:
   return (
     <div>
-      {messages.map(m => (
+      {messages.map((m) => (
         <div key={m.id}>
           {m.role === 'user' ? 'User: ' : 'AI: '}
-          {m.parts.map(part => (part.type === 'text' ? part.text : '')).join('')}
+          {m.parts.map((part) => (part.type === 'text' ? part.text : '')).join('')}
         </div>
       ))}
 
       <form onSubmit={handleSubmit}>
-        <input value={input} onChange={e => setInput(e.target.value)} placeholder="Type a message..." />
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+        />
         <button type="submit">Send</button>
       </form>
     </div>
@@ -275,7 +282,13 @@ our file-based chat store is implemented as follows:
 import { UIMessage } from 'ai';
 import { writeFile } from 'fs/promises';
 
-export async function saveChat({ chatId, messages }: { chatId: string; messages: UIMessage[] }): Promise<void> {
+export async function saveChat({
+  chatId,
+  messages,
+}: {
+  chatId: string;
+  messages: UIMessage[];
+}): Promise<void> {
   const content = JSON.stringify(messages, null, 2);
   await writeFile(getChatFile(chatId), content);
 }

@@ -7,14 +7,12 @@ The component should be a functional component and should be styled with Nativew
 Follow the following steps:
 
 1. Layout Analysis:
-
    - Describe the main layout structure you observe in the image
    - Identify key UI components (buttons, cards, lists, etc.)
    - Identify components from `@/components/ui` we can use to build the layout if needed
    - Note any specific spacing, alignment, or positioning patterns
 
 2. Component Implementation:
-
    - Use Nativewind for styling
    - Use shared components from `@/components/ui` in case you need them
    - Component should be accessible and follow the accessibility best practices
@@ -38,7 +36,7 @@ type TitleProps = {
 
 export function Title({ text }: TitleProps) {
   return (
-    <View className="flex-row items-center justify-center  py-4 pb-2">
+    <View className="flex-row items-center justify-center py-4 pb-2">
       <Text className="pr-2 text-2xl">{text}</Text>
       <View className="h-[2px] flex-1 bg-neutral-300" />
       <Image
@@ -52,7 +50,7 @@ export function Title({ text }: TitleProps) {
 
 export function TitleWithTranslation({ text }: TitleProps) {
   return (
-    <View className="flex-row items-center justify-center  py-4 pb-2">
+    <View className="flex-row items-center justify-center py-4 pb-2">
       <Text tx="some.value" className="pr-2 text-2xl" />
       <View className="h-[2px] flex-1 bg-neutral-300" />
       <Image
@@ -105,39 +103,22 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
     resolver: zodResolver(schema),
   });
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="padding"
-      keyboardVerticalOffset={10}
-    >
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" keyboardVerticalOffset={10}>
       <View className="flex-1 justify-center p-4">
         <View className="items-center justify-center">
-          <Text
-            testID="form-title"
-            className="pb-6 text-center text-4xl font-bold"
-          >
+          <Text testID="form-title" className="pb-6 text-center text-4xl font-bold">
             Sign In
           </Text>
 
           <Text className="mb-6 max-w-xs text-center text-gray-500">
-            Welcome! 👋 This is a demo login screen! Feel free to use any email
-            and password to sign in and try it out.
+            Welcome! 👋 This is a demo login screen! Feel free to use any email and password to sign
+            in and try it out.
           </Text>
         </View>
 
-        <ControlledInput
-          testID="name"
-          control={control}
-          name="name"
-          label="Name"
-        />
+        <ControlledInput testID="name" control={control} name="name" label="Name" />
 
-        <ControlledInput
-          testID="email-input"
-          control={control}
-          name="email"
-          label="Email"
-        />
+        <ControlledInput testID="email-input" control={control} name="email" label="Email" />
         <ControlledInput
           testID="password-input"
           control={control}
@@ -146,11 +127,7 @@ export const LoginForm = ({ onSubmit = () => {} }: LoginFormProps) => {
           placeholder="***"
           secureTextEntry={true}
         />
-        <Button
-          testID="login-button"
-          label="Login"
-          onPress={handleSubmit(onSubmit)}
-        />
+        <Button testID="login-button" label="Login" onPress={handleSubmit(onSubmit)} />
       </View>
     </KeyboardAvoidingView>
   );

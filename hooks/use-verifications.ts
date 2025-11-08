@@ -1,28 +1,51 @@
-import { supabase } from '@/lib/supabase/supabase';
-import type { Verification, VerificationInsert, VerificationUpdate } from '@/types/verification';
-import { useEffect, useState } from 'react';
+import { supabase } from "@/lib/supabase/supabase";
+import type {
+  Verification,
+  VerificationInsert,
+  VerificationUpdate,
+} from "@/types/verification";
+import { useEffect, useState } from "react";
+
+export type VerificationWithProfile = Verification & {
+  profiles: {
+    avatar_url: string | null;
+    full_name: string | null;
+    username: string | null;
+  } | null;
+};
 
 export function useVerifications() {
-  const [verifications, setVerifications] = useState<Verification[]>([]);
+  const [verifications, setVerifications] = useState<VerificationWithProfile[]>(
+    [],
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchVerifications = async () => {
+  const fetchVerifications = async (isRefreshing?: boolean) => {
     try {
-      setIsLoading(true);
+      if (!isRefreshing) setIsLoading(true);
       setError(null);
 
       const { data, error: fetchError } = await supabase
-        .from('verifications')
-        .select('*')
-        .order('created_at', { ascending: false });
+        .from("verifications")
+        .select(
+          `
+          *,
+          profiles!verifications_user_id_fkey1 (
+            avatar_url,
+            full_name,
+            username
+          )
+        `,
+        )
+        .order("created_at", { ascending: false });
 
       if (fetchError) throw fetchError;
 
       setVerifications(data || []);
     } catch (err) {
       setError(err as Error);
-      console.error('Error fetching verifications:', err);
+      console.error("Error fetching verifications:", err);
     } finally {
       setIsLoading(false);
     }
@@ -33,17 +56,17 @@ export function useVerifications() {
 
     // Subscribe to realtime changes
     const channel = supabase
-      .channel('verifications-changes')
+      .channel("verifications-changes")
       .on(
-        'postgres_changes',
+        "postgres_changes",
         {
-          event: '*',
-          schema: 'public',
-          table: 'verifications',
+          event: "*",
+          schema: "public",
+          table: "verifications",
         },
         () => {
           fetchVerifications();
-        }
+        },
       )
       .subscribe();
 
@@ -56,7 +79,7 @@ export function useVerifications() {
     verifications,
     isLoading,
     error,
-    refetch: fetchVerifications,
+    refetch: () => fetchVerifications(true),
   };
 }
 
@@ -64,15 +87,26 @@ export function useCreateVerification() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
-  const createVerification = async (verification: VerificationInsert): Promise<Verification | null> => {
+  const createVerification = async (
+    verification: VerificationInsert,
+  ): Promise<VerificationWithProfile | null> => {
     try {
       setIsLoading(true);
       setError(null);
 
       const { data, error: createError } = await supabase
-        .from('verifications')
+        .from("verifications")
         .insert(verification)
-        .select()
+        .select(
+          `
+          *,
+          profiles!verifications_user_id_fkey1 (
+            avatar_url,
+            full_name,
+            username
+          )
+        `,
+        )
         .single();
 
       if (createError) throw createError;
@@ -80,7 +114,7 @@ export function useCreateVerification() {
       return data;
     } catch (err) {
       setError(err as Error);
-      console.error('Error creating verification:', err);
+      console.error("Error creating verification:", err);
       return null;
     } finally {
       setIsLoading(false);
@@ -100,17 +134,26 @@ export function useUpdateVerification() {
 
   const updateVerification = async (
     id: string,
-    updates: VerificationUpdate
-  ): Promise<Verification | null> => {
+    updates: VerificationUpdate,
+  ): Promise<VerificationWithProfile | null> => {
     try {
       setIsLoading(true);
       setError(null);
 
       const { data, error: updateError } = await supabase
-        .from('verifications')
+        .from("verifications")
         .update(updates)
-        .eq('id', id)
-        .select()
+        .eq("id", id)
+        .select(
+          `
+          *,
+          profiles!verifications_user_id_fkey1 (
+            avatar_url,
+            full_name,
+            username
+          )
+        `,
+        )
         .single();
 
       if (updateError) throw updateError;
@@ -118,7 +161,7 @@ export function useUpdateVerification() {
       return data;
     } catch (err) {
       setError(err as Error);
-      console.error('Error updating verification:', err);
+      console.error("Error updating verification:", err);
       return null;
     } finally {
       setIsLoading(false);
@@ -142,16 +185,16 @@ export function useDeleteVerification() {
       setError(null);
 
       const { error: deleteError } = await supabase
-        .from('verifications')
+        .from("verifications")
         .delete()
-        .eq('id', id);
+        .eq("id", id);
 
       if (deleteError) throw deleteError;
 
       return true;
     } catch (err) {
       setError(err as Error);
-      console.error('Error deleting verification:', err);
+      console.error("Error deleting verification:", err);
       return false;
     } finally {
       setIsLoading(false);
@@ -167,20 +210,29 @@ export function useDeleteVerification() {
 
 export async function uploadVerificationImage(
   userId: string,
-  uri: string
+  uri: string,
 ): Promise<string | null> {
   try {
     // Get file extension
-    const fileExt = uri.split('.').pop()?.toLowerCase() || 'jpg';
+    const fileExt = uri.split(".").pop()?.toLowerCase() || "jpg";
     const fileName = `${userId}/${Date.now()}.${fileExt}`;
 
-    // Convert URI to blob for upload
-    const response = await fetch(uri);
-    const blob = await response.blob();
+    console.log("Uploading file:", fileName);
 
+    // Create form data for React Native
+    const formData = new FormData();
+
+    // @ts-ignore - React Native FormData accepts this format
+    formData.append("file", {
+      uri,
+      type: `image/${fileExt}`,
+      name: fileName,
+    });
+
+    // Use Supabase storage upload with form data
     const { data, error } = await supabase.storage
-      .from('verification-images')
-      .upload(fileName, blob, {
+      .from("verification-images")
+      .upload(fileName, formData as any, {
         contentType: `image/${fileExt}`,
         upsert: false,
       });
@@ -189,12 +241,13 @@ export async function uploadVerificationImage(
 
     // Get public URL
     const { data: urlData } = supabase.storage
-      .from('verification-images')
+      .from("verification-images")
       .getPublicUrl(data.path);
 
+    console.log("Upload successful:", urlData.publicUrl);
     return urlData.publicUrl;
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error("Error uploading image:", error);
     return null;
   }
 }

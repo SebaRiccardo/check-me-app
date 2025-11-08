@@ -48,7 +48,13 @@ Use the `resume` option in the `useChat` hook to enable stream resumption. When 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport, type UIMessage } from 'ai';
 
-export function Chat({ chatData, resume = false }: { chatData: { id: string; messages: UIMessage[] }; resume?: boolean }) {
+export function Chat({
+  chatData,
+  resume = false,
+}: {
+  chatData: { id: string; messages: UIMessage[] };
+  resume?: boolean;
+}) {
   const { messages, sendMessage, status } = useChat({
     id: chatData.id,
     messages: chatData.messages,
@@ -162,7 +168,9 @@ export async function GET(_: Request, { params }: { params: Promise<{ id: string
     waitUntil: after,
   });
 
-  return new Response(await streamContext.resumeExistingStream(chat.activeStreamId), { headers: UI_MESSAGE_STREAM_HEADERS });
+  return new Response(await streamContext.resumeExistingStream(chat.activeStreamId), {
+    headers: UI_MESSAGE_STREAM_HEADERS,
+  });
 }
 ```
 

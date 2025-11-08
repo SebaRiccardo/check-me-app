@@ -5,6 +5,7 @@
 A complete React Native + Expo application with the following features:
 
 ### 🔐 Authentication System
+
 - **Login Screen** (`app/login.tsx`)
   - Email/password sign-in and sign-up in one screen
   - Toggle between sign-in and sign-up modes
@@ -14,6 +15,7 @@ A complete React Native + Expo application with the following features:
   - Auto-navigation on successful auth
 
 ### 📰 News Feed (`app/(tabs)/feed.tsx`)
+
 - Fetches real-time news from Newsdata.io API
 - Displays articles in beautiful cards with:
   - Article image
@@ -28,6 +30,7 @@ A complete React Native + Expo application with the following features:
 - Optimized rendering with FlashList
 
 ### 👤 Profile Screen (`app/(tabs)/profile.tsx`)
+
 - Displays user information:
   - Avatar (from Supabase metadata or default icon)
   - Display name
@@ -41,6 +44,7 @@ A complete React Native + Expo application with the following features:
 - Version information at bottom
 
 ### 🎨 UI/UX Features
+
 - **Theme**: Flat, minimal design inspired by Anthropic
 - **Color Scheme**: Custom blue-based palette defined in `global.css`
 - **Dark Mode**: Full support (though not toggled in UI yet)
@@ -50,6 +54,7 @@ A complete React Native + Expo application with the following features:
 - **Safe Areas**: Proper handling of notches and status bars
 
 ### 📊 Data Management
+
 - **TanStack Query** for server state
 - **AsyncStorage Persistence** - cache survives app restarts
 - **Optimistic Updates** capability
@@ -58,6 +63,7 @@ A complete React Native + Expo application with the following features:
 - **Cache Time**: 24 hours
 
 ### 🔄 Navigation
+
 - **Expo Router** (file-based routing)
 - **Tab Navigation** with Feed and Profile tabs
 - **Protected Routes** - login required for tabs
@@ -67,6 +73,7 @@ A complete React Native + Expo application with the following features:
 ## 📁 Files Created/Modified
 
 ### New Files Created:
+
 1. `providers/query-provider.tsx` - TanStack Query with persistence
 2. `app/login.tsx` - Authentication screen
 3. `app/(tabs)/feed.tsx` - News feed screen
@@ -80,6 +87,7 @@ A complete React Native + Expo application with the following features:
 11. `SETUP.md` - Quick setup guide
 
 ### Modified Files:
+
 1. `app/_layout.tsx` - Added QueryProvider
 2. `app/(tabs)/index.tsx` - Redirect to feed
 3. `global.css` - Updated theme colors
@@ -87,6 +95,7 @@ A complete React Native + Expo application with the following features:
 5. `package.json` - New dependencies installed
 
 ## 📦 Dependencies Added
+
 - `@tanstack/react-query` - Server state management
 - `@tanstack/query-async-storage-persister` - Cache persistence
 - `@tanstack/react-query-persist-client` - Persistence integration
@@ -97,6 +106,7 @@ A complete React Native + Expo application with the following features:
 ## 🎯 Implementation Details
 
 ### Authentication Flow
+
 1. App checks auth state via `AuthProvider`
 2. If not logged in → redirect to `/login`
 3. User signs in/up with Supabase Auth
@@ -105,6 +115,7 @@ A complete React Native + Expo application with the following features:
 6. Auth state monitored continuously
 
 ### Data Fetching Strategy
+
 1. TanStack Query fetches from Newsdata.io API
 2. Results cached in AsyncStorage
 3. On mount, load from cache immediately (instant UI)
@@ -113,6 +124,7 @@ A complete React Native + Expo application with the following features:
 6. Paginate with `nextPage` cursor for infinite scroll
 
 ### News API Integration
+
 - **Endpoint**: `https://newsdata.io/api/1/latest`
 - **API Key**: Included (public key)
 - **Countries**: Australia & US (`au,us`)
@@ -120,6 +132,7 @@ A complete React Native + Expo application with the following features:
 - **Rate Limit**: Free tier limits apply
 
 ### Styling Approach
+
 - NativeWind (Tailwind CSS for React Native)
 - CSS variables for theming
 - Utility-first classes
@@ -129,6 +142,7 @@ A complete React Native + Expo application with the following features:
 ## 🚀 How to Run
 
 1. Install dependencies:
+
    ```bash
    pnpm install
    ```
@@ -138,6 +152,7 @@ A complete React Native + Expo application with the following features:
    - Add your Supabase URL and anon key
 
 3. Run the app:
+
    ```bash
    pnpm dev
    ```
@@ -151,7 +166,9 @@ A complete React Native + Expo application with the following features:
 ## 🎨 Customization Points
 
 ### Theme Colors
+
 Edit `global.css` CSS variables:
+
 - `--primary` - Main brand color (currently blue)
 - `--background` - Background color
 - `--foreground` - Text color
@@ -159,13 +176,17 @@ Edit `global.css` CSS variables:
 - etc.
 
 ### News API
+
 Edit `hooks/use-news-query.ts`:
+
 - Change countries
 - Add categories
 - Modify query params
 
 ### Navigation
+
 Add more tabs in `app/(tabs)/`:
+
 - Create new `.tsx` files
 - Add to `_layout.tsx`
 - Will auto-appear in tab bar
@@ -173,6 +194,7 @@ Add more tabs in `app/(tabs)/`:
 ## 📝 Notes
 
 ### What's Working:
+
 ✅ Authentication (sign in/up/out)
 ✅ News feed with infinite scroll
 ✅ Pull to refresh
@@ -184,11 +206,13 @@ Add more tabs in `app/(tabs)/`:
 ✅ Loading states
 
 ### What's UI Only:
+
 ⚠️ OAuth buttons (Google, Apple, Facebook)
 ⚠️ Profile menu items (just show alerts)
 ⚠️ Theme switcher (dark mode works but no toggle)
 
 ### Potential Enhancements:
+
 - Implement OAuth providers
 - Add profile editing
 - Add search functionality

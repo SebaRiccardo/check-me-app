@@ -153,7 +153,7 @@ const result = await generateText({
   prepareStep: ({ stepNumber }) => {
     // Modify settings between steps
   },
-  onStepFinish: step => {
+  onStepFinish: (step) => {
     // Monitor or save progress
   },
 });

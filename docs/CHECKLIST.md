@@ -89,18 +89,21 @@ Use this checklist before running your app for the first time:
 ## 📱 Platform-Specific
 
 ### iOS (if testing on Mac)
+
 - [ ] Runs in iOS Simulator
 - [ ] Keyboard shows/hides properly
 - [ ] Status bar style correct
 - [ ] Safe area insets correct
 
 ### Android (if testing)
+
 - [ ] Runs in Android Emulator
 - [ ] Back button works correctly
 - [ ] Status bar style correct
 - [ ] Keyboard behavior correct
 
 ### Web (if testing)
+
 - [ ] Runs in web browser
 - [ ] Responsive layout
 - [ ] Mouse/touch interactions work
@@ -108,6 +111,7 @@ Use this checklist before running your app for the first time:
 ## 🚀 Next Steps
 
 After all checks pass:
+
 - [ ] Customize theme colors if desired
 - [ ] Add your own features
 - [ ] Set up analytics (optional)

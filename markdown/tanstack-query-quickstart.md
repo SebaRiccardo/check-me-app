@@ -1,9 +1,9 @@
 import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
+useQuery,
+useMutation,
+useQueryClient,
+QueryClient,
+QueryClientProvider,
 } from '@tanstack/react-query'
 import { getTodos, postTodo } from '../my-api'
 
@@ -11,37 +11,37 @@ import { getTodos, postTodo } from '../my-api'
 const queryClient = new QueryClient()
 
 function App() {
-  return (
-    // Provide the client to your App
-    <QueryClientProvider client={queryClient}>
-      <Todos />
-    </QueryClientProvider>
-  )
+return (
+// Provide the client to your App
+<QueryClientProvider client={queryClient}>
+<Todos />
+</QueryClientProvider>
+)
 }
 
 function Todos() {
-  // Access the client
-  const queryClient = useQueryClient()
+// Access the client
+const queryClient = useQueryClient()
 
-  // Queries
-  const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
+// Queries
+const query = useQuery({ queryKey: ['todos'], queryFn: getTodos })
 
-  // Mutations
-  const mutation = useMutation({
-    mutationFn: postTodo,
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ['todos'] })
-    },
-  })
+// Mutations
+const mutation = useMutation({
+mutationFn: postTodo,
+onSuccess: () => {
+// Invalidate and refetch
+queryClient.invalidateQueries({ queryKey: ['todos'] })
+},
+})
 
-  return (
-    <div>
-      <ul>
-        {query.data?.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
-        ))}
-      </ul>
+return (
+<div>
+<ul>
+{query.data?.map((todo) => (
+<li key={todo.id}>{todo.title}</li>
+))}
+</ul>
 
       <button
         onClick={() => {
@@ -54,7 +54,8 @@ function Todos() {
         Add Todo
       </button>
     </div>
-  )
+
+)
 }
 
 render(<App />, document.getElementById('root'))

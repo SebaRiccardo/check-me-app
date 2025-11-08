@@ -95,6 +95,7 @@ check-me-app/
 ## Data Flow
 
 ### Authentication
+
 ```
 User Input
     ↓
@@ -110,6 +111,7 @@ Auto Navigation
 ```
 
 ### News Feed
+
 ```
 Component Mount
     ↓
@@ -127,6 +129,7 @@ Update UI
 ```
 
 ### User Actions
+
 ```
 Pull to Refresh → Refetch Query → Update UI
 Scroll to End → Load Next Page → Append Data
@@ -177,6 +180,7 @@ RootLayout
 ## State Management
 
 ### Global State
+
 - **Auth State**: `AuthProvider` + `useAuthContext`
   - session, profile, isLoading, isLoggedIn
 
@@ -185,6 +189,7 @@ RootLayout
   - Persisted in AsyncStorage
 
 ### Local State
+
 - **Login Screen**: email, password, isLoading, isSignUp
 - **Feed Screen**: isRefreshing
 - **Profile Screen**: (mostly derived from auth context)
@@ -192,19 +197,21 @@ RootLayout
 ## API Integration
 
 ### Supabase
+
 ```typescript
 // Authentication
-supabase.auth.signUp({ email, password })
-supabase.auth.signInWithPassword({ email, password })
-supabase.auth.signOut()
-supabase.auth.getSession()
-supabase.auth.onAuthStateChange(callback)
+supabase.auth.signUp({ email, password });
+supabase.auth.signInWithPassword({ email, password });
+supabase.auth.signOut();
+supabase.auth.getSession();
+supabase.auth.onAuthStateChange(callback);
 
 // Optional: Profiles
-supabase.from('profiles').select('*').eq('id', userId)
+supabase.from("profiles").select("*").eq("id", userId);
 ```
 
 ### Newsdata.io
+
 ```typescript
 // Fetch news
 GET https://newsdata.io/api/1/latest
@@ -225,22 +232,26 @@ GET https://newsdata.io/api/1/latest
 ## Key Features Implementation
 
 ### ♾️ Infinite Scroll
+
 - Uses TanStack Query's `useInfiniteQuery`
 - `getNextPageParam` extracts `nextPage` token
 - `onEndReached` triggers `fetchNextPage`
 
 ### 🔄 Pull to Refresh
+
 - `RefreshControl` component
 - Calls `refetch()` from TanStack Query
 - Shows loading spinner
 
 ### 💾 Offline Caching
+
 - `createAsyncStoragePersister` from TanStack
 - Cache key: `TANSTACK_QUERY_CACHE`
 - 24-hour cache duration
 - Auto-loads on mount, fetches fresh data in background
 
 ### 🔐 Protected Routes
+
 - `Stack.Protected` with `guard` prop
 - Based on `isLoggedIn` from auth context
 - Auto-redirects based on auth state
@@ -257,22 +268,26 @@ GET https://newsdata.io/api/1/latest
 ## Design System
 
 ### Colors (from global.css)
+
 - **Primary**: Blue (#1DA1F2 - Twitter-like blue)
 - **Background**: White (light) / Black (dark)
 - **Card**: Light gray (light) / Dark gray (dark)
 - **Muted**: Light gray for secondary text
 
 ### Typography
+
 - **Headlines**: Bold, 2xl-3xl
 - **Body**: Regular, base
 - **Muted**: Smaller, gray
 
 ### Spacing
+
 - **Screen padding**: 6 (24px)
 - **Card gap**: 4 (16px)
 - **Element gap**: 2-3 (8-12px)
 
 ### Components
+
 - **Rounded corners**: lg (13px from --radius: 1.3rem)
 - **Shadows**: Subtle, black/5-10%
 - **Borders**: Border color from theme

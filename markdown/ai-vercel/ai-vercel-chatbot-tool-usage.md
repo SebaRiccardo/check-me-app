@@ -150,10 +150,10 @@ export default function Chat() {
 
   return (
     <>
-      {messages?.map(message => (
+      {messages?.map((message) => (
         <div key={message.id}>
           <strong>{`${message.role}: `}</strong>
-          {message.parts.map(part => {
+          {message.parts.map((part) => {
             switch (part.type) {
               // render text parts as simple text:
               case 'text':
@@ -178,8 +178,7 @@ export default function Chat() {
                                 toolCallId: callId,
                                 output: 'Yes, confirmed.',
                               })
-                            }
-                          >
+                            }>
                             Yes
                           </button>
                           <button
@@ -189,8 +188,7 @@ export default function Chat() {
                                 toolCallId: callId,
                                 output: 'No, denied',
                               })
-                            }
-                          >
+                            }>
                             No
                           </button>
                         </div>
@@ -228,7 +226,9 @@ export default function Chat() {
                   case 'input-streaming':
                     return <pre key={callId}>{JSON.stringify(part, null, 2)}</pre>;
                   case 'input-available':
-                    return <div key={callId}>Getting weather information for {part.input.city}...</div>;
+                    return (
+                      <div key={callId}>Getting weather information for {part.input.city}...</div>
+                    );
                   case 'output-available':
                     return (
                       <div key={callId}>
@@ -251,15 +251,14 @@ export default function Chat() {
       ))}
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (input.trim()) {
             sendMessage({ text: input });
             setInput('');
           }
-        }}
-      >
-        <input value={input} onChange={e => setInput(e.target.value)} />
+        }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} />
       </form>
     </>
   );
@@ -378,9 +377,9 @@ export default function Chat() {
   // ...
   return (
     <>
-      {messages?.map(message => (
+      {messages?.map((message) => (
         <div key={message.id}>
-          {message.parts.map(part => {
+          {message.parts.map((part) => {
             switch (part.type) {
               case 'tool-askForConfirmation':
               case 'tool-getLocation':
@@ -509,6 +508,6 @@ const response = createUIMessageResponse({
   async execute(dataStream) {
     // ...
   },
-  onError: error => `Custom error: ${error.message}`,
+  onError: (error) => `Custom error: ${error.message}`,
 });
 ```

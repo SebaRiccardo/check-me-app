@@ -3,6 +3,7 @@
 ## ✅ What Was Built
 
 A complete community verifications system where users can:
+
 - View all community verifications in real-time
 - Create new verifications with title, description, category, and optional image
 - Upload images to Supabase Storage
@@ -12,6 +13,7 @@ A complete community verifications system where users can:
 ## 📁 Files Created
 
 ### Backend & Database
+
 1. **`supabase/migrations/create_verifications_table.sql`**
    - Complete SQL schema for verifications table
    - RLS policies for security
@@ -23,12 +25,14 @@ A complete community verifications system where users can:
    - Includes helpful comments and verification steps
 
 ### Types
+
 3. **`types/verification.ts`**
    - TypeScript interfaces for Verification
    - Insert and Update types
    - Category constants array
 
 ### Custom Hooks
+
 4. **`hooks/use-verifications.ts`**
    - `useVerifications()` - Fetch all with realtime
    - `useCreateVerification()` - Create new
@@ -37,6 +41,7 @@ A complete community verifications system where users can:
    - `uploadVerificationImage()` - Image upload utility
 
 ### UI Components
+
 5. **`components/ui/textarea.tsx`**
    - Multi-line text input component
    - NativeWind styled
@@ -64,6 +69,7 @@ A complete community verifications system where users can:
     - Loading states
 
 ### Screens
+
 11. **`app/(tabs)/community.tsx`**
     - Main community screen
     - FlashList for performance
@@ -72,12 +78,14 @@ A complete community verifications system where users can:
     - Empty and error states
 
 ### Navigation
+
 12. **`app/(tabs)/_layout.tsx`** (Updated)
     - Added "Comunidad" tab
     - Users icon from lucide-react-native
     - Positioned between Verificar and Perfil
 
 ### Documentation
+
 13. **`VERIFICATION_FEATURE.md`**
     - Complete feature documentation
     - Usage examples
@@ -99,6 +107,7 @@ A complete community verifications system where users can:
 ## 🗄️ Database Schema
 
 ### Table: verifications
+
 ```sql
 - id: UUID (Primary Key)
 - user_id: UUID (Foreign Key → auth.users)
@@ -112,6 +121,7 @@ A complete community verifications system where users can:
 ```
 
 ### Storage: verification-images
+
 - Public bucket
 - Path structure: `{user_id}/{timestamp}.{ext}`
 - RLS policies protect user files
@@ -119,12 +129,14 @@ A complete community verifications system where users can:
 ## 🔐 Security (RLS Policies)
 
 ### Verifications Table
+
 - ✅ **SELECT**: Everyone can read
 - ✅ **INSERT**: Only authenticated users
 - ✅ **UPDATE**: Only owner (user_id match)
 - ✅ **DELETE**: Only owner (user_id match)
 
 ### Storage Bucket
+
 - ✅ **View**: Everyone
 - ✅ **Upload**: Authenticated users only
 - ✅ **Update/Delete**: Owner only (by folder path)
@@ -132,6 +144,7 @@ A complete community verifications system where users can:
 ## 🎨 UI Features
 
 ### Community Screen
+
 - Header with title and create button
 - FlashList for optimized scrolling
 - Pull-to-refresh functionality
@@ -140,6 +153,7 @@ A complete community verifications system where users can:
 - Real-time updates via Supabase
 
 ### Create Form (Bottom Sheet)
+
 - Title input (min 5 chars)
 - Description textarea (min 20 chars)
 - News ID input (optional)
@@ -150,6 +164,7 @@ A complete community verifications system where users can:
 - Form validation with error messages
 
 ### Verification Card
+
 - Optional image at top
 - Category badge (colored pill)
 - Bold title
@@ -160,25 +175,27 @@ A complete community verifications system where users can:
 
 ```typescript
 [
-  'Política',
-  'Salud',
-  'Tecnología',
-  'Economía',
-  'Ciencia',
-  'Deportes',
-  'Entretenimiento',
-  'Otro',
-]
+  "Política",
+  "Salud",
+  "Tecnología",
+  "Economía",
+  "Ciencia",
+  "Deportes",
+  "Entretenimiento",
+  "Otro",
+];
 ```
 
 ## 🚀 Setup Instructions
 
 ### 1. Install Dependencies (Already Done)
+
 ```bash
 pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-picker react-hook-form @hookform/resolvers zod
 ```
 
 ### 2. Run SQL Setup in Supabase
+
 1. Go to: Supabase Dashboard → SQL Editor
 2. Click "New Query"
 3. Copy content from `supabase/SETUP_VERIFICATIONS.sql`
@@ -186,11 +203,13 @@ pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-pic
 5. Verify success message
 
 ### 3. Verify Storage Bucket
+
 1. Go to: Storage → Buckets
 2. Look for `verification-images`
 3. Should be public and have policies
 
 ### 4. Test the Feature
+
 1. Run app: `pnpm run dev:dev-client`
 2. Navigate to "Comunidad" tab
 3. Tap "+" button to create verification
@@ -200,6 +219,7 @@ pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-pic
 ## 🔄 How It Works
 
 ### Creating a Verification
+
 1. User taps "+" floating button
 2. Bottom sheet slides up with form
 3. User fills title, description, category
@@ -211,6 +231,7 @@ pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-pic
 9. List auto-updates via realtime
 
 ### Viewing Verifications
+
 1. Component mounts → `useVerifications()` fetches data
 2. Supabase realtime subscription activates
 3. FlashList renders cards efficiently
@@ -220,23 +241,27 @@ pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-pic
 ## 🎯 Key Technical Decisions
 
 ### Why Custom Hooks Instead of TanStack Query?
+
 - Per your requirement: "do not use tanstack query"
 - Custom hooks provide direct Supabase integration
 - Simpler state management for CRUD operations
 - Still includes loading/error states
 
 ### Why Bottom Sheet?
+
 - Better UX than full-screen modal
 - Native gesture handling
 - Smooth animations
 - Can dismiss by dragging down
 
 ### Why FlashList?
+
 - Better performance than FlatList
 - Already used in feed screen
 - Handles large lists efficiently
 
 ### Why Controlled Components?
+
 - react-hook-form integration
 - Automatic validation
 - Better form state management
@@ -245,25 +270,31 @@ pnpm add @gorhom/bottom-sheet@^5 react-native-keyboard-controller expo-image-pic
 ## 🐛 Known Issues & Solutions
 
 ### Issue: Bottom sheet doesn't open
+
 **Solution**: Ensure ref is properly typed and passed:
+
 ```tsx
 const bottomSheetRef = useRef<BottomSheet>(null);
-<CreateVerificationForm ref={bottomSheetRef} />
+<CreateVerificationForm ref={bottomSheetRef} />;
 ```
 
 ### Issue: Image upload fails
+
 **Solution**: Check:
+
 - User is authenticated
 - Storage bucket exists
 - RLS policies are active
 - Image URI is valid
 
 ### Issue: Realtime not working
+
 **Solution**: Verify Supabase project has Realtime enabled in dashboard
 
 ## 📈 Next Steps & Enhancements
 
 Potential improvements:
+
 - [ ] Add likes/reactions to verifications
 - [ ] Comments section for each verification
 - [ ] User profiles showing their verifications
@@ -302,25 +333,28 @@ Potential improvements:
 ## 🎓 Code Examples
 
 ### Fetch Verifications
+
 ```typescript
 const { verifications, isLoading, error, refetch } = useVerifications();
 ```
 
 ### Create Verification
+
 ```typescript
 const { createVerification } = useCreateVerification();
 
 await createVerification({
   user_id: session.user.id,
-  title: 'Mi verificación',
-  description: 'Detalles aquí...',
-  category: 'Tecnología',
+  title: "Mi verificación",
+  description: "Detalles aquí...",
+  category: "Tecnología",
   news_id: null,
   image_url: null,
 });
 ```
 
 ### Upload Image
+
 ```typescript
 const imageUrl = await uploadVerificationImage(userId, imageUri);
 ```

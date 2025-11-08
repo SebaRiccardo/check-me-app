@@ -1,8 +1,8 @@
-import { Text } from '@/components/ui/text';
-import type { Control, FieldValues, Path } from 'react-hook-form';
-import { useController } from 'react-hook-form';
-import { Pressable, View, ScrollView } from 'react-native';
-import { cn } from '@/lib/utils';
+import { Text } from "@/components/ui/text";
+import type { Control, FieldValues, Path } from "react-hook-form";
+import { useController } from "react-hook-form";
+import { Pressable, View, ScrollView } from "react-native";
+import { cn } from "@/lib/utils";
 
 export type ControlledSelectProps<T extends FieldValues> = {
   control: Control<T>;
@@ -19,7 +19,7 @@ export function ControlledSelect<T extends FieldValues>({
   label,
   error,
   options,
-  placeholder = 'Seleccionar...',
+  placeholder = "Seleccionar...",
 }: ControlledSelectProps<T>) {
   const { field } = useController({
     control,
@@ -29,10 +29,12 @@ export function ControlledSelect<T extends FieldValues>({
   return (
     <View className="mb-4">
       {label && (
-        <Text className="text-sm font-medium text-foreground mb-1">{label}</Text>
+        <Text className="mb-1 text-sm font-medium text-foreground">
+          {label}
+        </Text>
       )}
-      <ScrollView 
-        horizontal 
+      <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         className="flex-row"
       >
@@ -41,18 +43,18 @@ export function ControlledSelect<T extends FieldValues>({
             key={option}
             onPress={() => field.onChange(option)}
             className={cn(
-              'mr-2 px-4 py-2 rounded-full border',
+              "mr-2 rounded-full border px-4 py-2",
               field.value === option
-                ? 'bg-primary border-primary'
-                : 'bg-background border-border'
+                ? "border-primary bg-primary"
+                : "border-border bg-background",
             )}
           >
             <Text
               className={cn(
-                'text-sm font-medium',
+                "text-sm font-medium",
                 field.value === option
-                  ? 'text-primary-foreground'
-                  : 'text-foreground'
+                  ? "text-primary-foreground"
+                  : "text-foreground",
               )}
             >
               {option}
@@ -60,9 +62,7 @@ export function ControlledSelect<T extends FieldValues>({
           </Pressable>
         ))}
       </ScrollView>
-      {error && (
-        <Text className="text-destructive text-xs mt-1">{error}</Text>
-      )}
+      {error && <Text className="mt-1 text-xs text-destructive">{error}</Text>}
     </View>
   );
 }

@@ -5,11 +5,13 @@ I've built a complete React Native + Expo app with authentication, news feed, an
 ## 📱 What You Got
 
 ### Screens
+
 1. **Login/Signup Screen** - Combined auth flow with email/password
 2. **News Feed** - Live news from Australia & US with infinite scroll
 3. **Profile Screen** - User info display with sign out
 
 ### Features
+
 - ✅ Supabase Authentication (email/password)
 - ✅ TanStack Query with offline caching
 - ✅ Tab navigation (Feed & Profile)
@@ -21,11 +23,13 @@ I've built a complete React Native + Expo app with authentication, news feed, an
 ## 🚀 Quick Start (3 Steps)
 
 ### 1️⃣ Install Dependencies
+
 ```bash
 pnpm install
 ```
 
 ### 2️⃣ Set Up Supabase
+
 1. Go to [supabase.com](https://supabase.com) and create a project
 2. Copy `.env.example` to `.env`
 3. Add your Supabase URL and key to `.env`:
@@ -35,6 +39,7 @@ pnpm install
    ```
 
 ### 3️⃣ Run It!
+
 ```bash
 pnpm dev
 ```
@@ -58,18 +63,23 @@ Press `i` for iOS, `a` for Android, or `w` for web.
 ## 🎨 Customization
 
 ### Change Colors
+
 Edit `global.css` and modify the CSS variables:
+
 ```css
 --primary: 203.8863 88.2845% 53.1373%; /* Your brand color */
 ```
 
 ### Add More Screens
+
 Create new files in `app/(tabs)/` and they'll automatically appear in the tab bar.
 
 ### Modify News Feed
+
 Edit `hooks/use-news-query.ts` to change:
+
 - Countries
-- Categories  
+- Categories
 - API source
 
 ## 📁 Key Files to Know
@@ -100,37 +110,44 @@ providers/
 ## ⚠️ Important Notes
 
 ### News API
+
 - Using free tier (has rate limits)
 - If no articles show, you may have hit the limit
 - API key is public (replace for production)
 
 ### OAuth Buttons
+
 - Google/Apple/Facebook buttons are **UI only**
 - To implement: Configure OAuth in Supabase dashboard
 
 ### Database
+
 - Profile data is optional
 - See SETUP.md for SQL to create profiles table
 
 ## 🐛 Troubleshooting
 
 **App won't start?**
+
 ```bash
 pnpm clean
 pnpm dev
 ```
 
 **Can't sign in?**
+
 - Check `.env` file exists and has correct values
 - Verify Supabase project is active
 
 **No news articles?**
+
 - API rate limit reached
 - Pull to refresh and try again
 
 ## 🎯 Next Steps
 
 Choose your adventure:
+
 - [ ] Customize the theme colors
 - [ ] Add more screens/features
 - [ ] Set up OAuth providers
@@ -156,8 +173,9 @@ Choose your adventure:
 ## 🎊 That's It!
 
 Your app is ready to run. Just:
+
 1. Install dependencies
-2. Configure Supabase  
+2. Configure Supabase
 3. Run `pnpm dev`
 
 Check the documentation files for more details. Happy coding! 🚀

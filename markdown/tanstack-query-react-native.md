@@ -24,28 +24,28 @@ React Query already supports auto refetch on reconnect in web browser.
 To add this behavior in React Native you have to use React Query `onlineManager` as in the example below:
 
 ```tsx
-import NetInfo from '@react-native-community/netinfo'
-import { onlineManager } from '@tanstack/react-query'
+import NetInfo from '@react-native-community/netinfo';
+import { onlineManager } from '@tanstack/react-query';
 
 onlineManager.setEventListener((setOnline) => {
   return NetInfo.addEventListener((state) => {
-    setOnline(!!state.isConnected)
-  })
-})
+    setOnline(!!state.isConnected);
+  });
+});
 ```
 
 or
 
 ```tsx
-import { onlineManager } from '@tanstack/react-query'
-import * as Network from 'expo-network'
+import { onlineManager } from '@tanstack/react-query';
+import * as Network from 'expo-network';
 
 onlineManager.setEventListener((setOnline) => {
   const eventSubscription = Network.addNetworkStateListener((state) => {
-    setOnline(!!state.isConnected)
-  })
-  return eventSubscription.remove
-})
+    setOnline(!!state.isConnected);
+  });
+  return eventSubscription.remove;
+});
 ```
 
 ## Refetch on App focus
@@ -53,22 +53,22 @@ onlineManager.setEventListener((setOnline) => {
 Instead of event listeners on `window`, React Native provides focus information through the [`AppState` module](https://reactnative.dev/docs/appstate#app-states). You can use the `AppState` "change" event to trigger an update when the app state changes to "active":
 
 ```tsx
-import { useEffect } from 'react'
-import { AppState, Platform } from 'react-native'
-import type { AppStateStatus } from 'react-native'
-import { focusManager } from '@tanstack/react-query'
+import { useEffect } from 'react';
+import { AppState, Platform } from 'react-native';
+import type { AppStateStatus } from 'react-native';
+import { focusManager } from '@tanstack/react-query';
 
 function onAppStateChange(status: AppStateStatus) {
   if (Platform.OS !== 'web') {
-    focusManager.setFocused(status === 'active')
+    focusManager.setFocused(status === 'active');
   }
 }
 
 useEffect(() => {
-  const subscription = AppState.addEventListener('change', onAppStateChange)
+  const subscription = AppState.addEventListener('change', onAppStateChange);
 
-  return () => subscription.remove()
-}, [])
+  return () => subscription.remove();
+}, []);
 ```
 
 ## Refresh on Screen focus
@@ -77,19 +77,19 @@ In some situations, you may want to refetch the query when a React Native Screen
 This custom hook will refetch **all active stale queries** when the screen is focused again.
 
 ```tsx
-import React from 'react'
-import { useFocusEffect } from '@react-navigation/native'
-import { useQueryClient } from '@tanstack/react-query'
+import React from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
 
 export function useRefreshOnFocus() {
-  const queryClient = useQueryClient()
-  const firstTimeRef = React.useRef(true)
+  const queryClient = useQueryClient();
+  const firstTimeRef = React.useRef(true);
 
   useFocusEffect(
     React.useCallback(() => {
       if (firstTimeRef.current) {
-        firstTimeRef.current = false
-        return
+        firstTimeRef.current = false;
+        return;
       }
 
       // refetch all stale active queries
@@ -97,9 +97,9 @@ export function useRefreshOnFocus() {
         queryKey: ['posts'],
         stale: true,
         type: 'active',
-      })
-    }, [queryClient]),
-  )
+      });
+    }, [queryClient])
+  );
 }
 ```
 

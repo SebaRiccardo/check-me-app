@@ -32,6 +32,7 @@ A modern React Native app built with Expo, Supabase, and TanStack Query featurin
 ### Installation
 
 1. **Install dependencies**
+
    ```bash
    pnpm install
    ```

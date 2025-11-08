@@ -3,6 +3,7 @@
 This guide will walk you through building your first Android development build.
 
 ## ⏱️ Time Required
+
 - **First Build**: ~15-20 minutes (EAS cloud build)
 - **Subsequent Builds**: Same time, but you rarely need to rebuild
 - **Daily Development**: 0 minutes (just run dev server!)
@@ -19,20 +20,24 @@ This guide will walk you through building your first Android development build.
 ## 🚀 Step-by-Step Guide
 
 ### Step 1: Install Dependencies (if not done)
+
 ```bash
 cd check-me-app
 pnpm install
 ```
+
 **Expected**: All packages install successfully
 
 ---
 
 ### Step 2: Login to Expo/EAS
+
 ```bash
 eas login
 ```
 
 **Prompts:**
+
 ```
 ? Email or username: your@email.com
 ? Password: ********
@@ -41,25 +46,30 @@ eas login
 **Expected**: "Logged in as [your-username]"
 
 **Don't have an account?**
+
 - Go to [expo.dev](https://expo.dev) and sign up (free)
 - Or use: `eas register`
 
 ---
 
 ### Step 3: Configure Your Project
+
 ```bash
 eas build:configure
 ```
 
 **What it does:**
+
 - ✅ Validates your `app.json`
 - ✅ Creates/updates `eas.json`
 - ✅ Links project to your Expo account
 
 **Prompts you might see:**
+
 ```
 ? Would you like to automatically create an EAS project for @your-username/check-me-app? › (Y/n)
 ```
+
 **Answer**: `Y` (Yes)
 
 **Expected**: "EAS project created successfully"
@@ -73,6 +83,7 @@ pnpm run build:dev:android
 ```
 
 Or the full command:
+
 ```bash
 eas build --profile development --platform android
 ```
@@ -80,27 +91,32 @@ eas build --profile development --platform android
 **What happens:**
 
 1. **Project Analysis** (10 seconds)
+
    ```
    📦 Analyzing project...
    ✔ Project is ready to build
    ```
 
 2. **Credentials Setup** (first time only)
+
    ```
    ? Would you like to generate a new Android keystore? › (Y/n)
    ```
+
    **Answer**: `Y` (Yes - let EAS handle it)
 
 3. **Build Queue** (immediate)
+
    ```
    🚀 Build queued
    Build ID: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
    ```
 
 4. **Building** (15-20 minutes)
+
    ```
    ⏳ Build in progress...
-   
+
    You can monitor the build at:
    https://expo.dev/accounts/[username]/projects/check-me-app/builds/[build-id]
    ```
@@ -112,6 +128,7 @@ eas build --profile development --platform android
    ```
 
 **💡 Pro Tip**: You can close the terminal and check status later:
+
 ```bash
 eas build:list
 ```
@@ -121,12 +138,14 @@ eas build:list
 ### Step 5: Download & Install APK
 
 **Option A: Direct Download (Recommended)**
+
 1. Click the APK link in terminal output
 2. Download to your Android device
 3. Enable "Install from Unknown Sources"
 4. Tap the downloaded APK to install
 
 **Option B: Using ADB (if device is connected)**
+
 ```bash
 # First, download the APK from the link
 # Then install via ADB:
@@ -134,6 +153,7 @@ adb install path/to/downloaded-app.apk
 ```
 
 **Option C: Scan QR Code**
+
 - Scan the QR code shown in terminal
 - Download on your device
 - Install
@@ -143,6 +163,7 @@ adb install path/to/downloaded-app.apk
 ### Step 6: Configure Environment
 
 Make sure your `.env` file exists with Supabase credentials:
+
 ```bash
 EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
@@ -157,6 +178,7 @@ pnpm run dev:dev-client
 ```
 
 **Expected output:**
+
 ```
 › Metro waiting on exp://192.168.1.xxx:8081
 › Scan the QR code above with Expo Go (Android) or the Camera app (iOS)
@@ -173,7 +195,8 @@ pnpm run dev:dev-client
 › Press ? │ show all commands
 ```
 
-**Important**: 
+**Important**:
+
 - This is different from `pnpm dev` (which is for Expo Go)
 - The dev server must be running for the app to work
 
@@ -194,13 +217,14 @@ pnpm run dev:dev-client
 ✅ Built a development client with custom native modules  
 ✅ Installed it on your device  
 ✅ Connected to your dev server  
-✅ Can now develop with hot reload  
+✅ Can now develop with hot reload
 
 ## 🔄 Daily Development Workflow
 
 Now that you have the development build installed:
 
 1. **Start dev server** (every time you code)
+
    ```bash
    pnpm run dev:dev-client
    ```
@@ -210,6 +234,7 @@ Now that you have the development build installed:
 3. **Code!** Changes appear automatically (hot reload)
 
 **You DON'T need to rebuild unless**:
+
 - You add/change native modules
 - You update Expo SDK
 - You change native configuration (app.json)
@@ -217,6 +242,7 @@ Now that you have the development build installed:
 ## 📊 Build Status & Troubleshooting
 
 ### Check Build Status
+
 ```bash
 # List all builds
 eas build:list
@@ -233,12 +259,14 @@ eas build:list --limit 1
 **Common Issues:**
 
 1. **Credentials Error**
+
    ```bash
    eas credentials
    # Follow prompts to reset
    ```
 
 2. **Build Timeout**
+
    ```bash
    # Retry with:
    pnpm run build:dev:android
@@ -252,6 +280,7 @@ eas build:list --limit 1
 ### App Won't Connect?
 
 1. **Check dev server is running**
+
    ```bash
    pnpm run dev:dev-client
    ```
@@ -265,11 +294,13 @@ eas build:list --limit 1
 ## 🎓 Next Steps
 
 ### Option 1: Continue Development
+
 - Write code
 - See changes in real-time
 - Test on real device
 
 ### Option 2: Share with Team
+
 ```bash
 # Build preview for testing
 pnpm run build:preview:android
@@ -277,6 +308,7 @@ pnpm run build:preview:android
 ```
 
 ### Option 3: Prepare for Production
+
 ```bash
 # Build production version
 pnpm run build:prod:android
@@ -296,17 +328,20 @@ pnpm run build:preview:android
 ```
 
 **Difference:**
+
 - **Development build**: Needs dev server, has dev tools, hot reload
 - **Preview build**: Standalone, production-like, no dev tools
 
 ## 💰 EAS Build Limits
 
 **Free Tier:**
+
 - 30 builds/month (across all projects)
 - Shared build queue
 - Full features
 
 **Tips to Conserve Builds:**
+
 - Build development client once, use for weeks
 - Only rebuild when adding native modules
 - Use Expo Go when possible (no native modules)
@@ -322,14 +357,14 @@ pnpm run build:preview:android
 
 ## 🎉 Summary
 
-| Step | Command | Time | Frequency |
-|------|---------|------|-----------|
-| 1. Install deps | `pnpm install` | 2 min | Once |
-| 2. Login | `eas login` | 30 sec | Once |
-| 3. Configure | `eas build:configure` | 30 sec | Once |
-| 4. Build | `pnpm run build:dev:android` | 15-20 min | Rarely |
-| 5. Install APK | (manual) | 2 min | Rarely |
-| 6. Dev server | `pnpm run dev:dev-client` | 30 sec | Daily |
+| Step            | Command                      | Time      | Frequency |
+| --------------- | ---------------------------- | --------- | --------- |
+| 1. Install deps | `pnpm install`               | 2 min     | Once      |
+| 2. Login        | `eas login`                  | 30 sec    | Once      |
+| 3. Configure    | `eas build:configure`        | 30 sec    | Once      |
+| 4. Build        | `pnpm run build:dev:android` | 15-20 min | Rarely    |
+| 5. Install APK  | (manual)                     | 2 min     | Rarely    |
+| 6. Dev server   | `pnpm run dev:dev-client`    | 30 sec    | Daily     |
 
 **After first setup:** Just run step 6 daily! 🚀
 

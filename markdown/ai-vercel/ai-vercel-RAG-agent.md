@@ -210,11 +210,13 @@ export const embeddings = pgTable(
     id: varchar('id', { length: 191 })
       .primaryKey()
       .$defaultFn(() => nanoid()),
-    resourceId: varchar('resource_id', { length: 191 }).references(() => resources.id, { onDelete: 'cascade' }),
+    resourceId: varchar('resource_id', { length: 191 }).references(() => resources.id, {
+      onDelete: 'cascade',
+    }),
     content: text('content').notNull(),
     embedding: vector('embedding', { dimensions: 1536 }).notNull(),
   },
-  table => ({
+  (table) => ({
     embeddingIndex: index('embeddingIndex').using('hnsw', table.embedding.op('vector_cosine_ops')),
   })
 );
@@ -250,7 +252,7 @@ const generateChunks = (input: string): string[] => {
   return input
     .trim()
     .split('.')
-    .filter(i => i !== '');
+    .filter((i) => i !== '');
 };
 ```
 
@@ -286,10 +288,12 @@ const generateChunks = (input: string): string[] => {
   return input
     .trim()
     .split('.')
-    .filter(i => i !== '');
+    .filter((i) => i !== '');
 };
 
-export const generateEmbeddings = async (value: string): Promise<Array<{ embedding: number[]; content: string }>> => {
+export const generateEmbeddings = async (
+  value: string
+): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(value);
   const { embeddings } = await embedMany({
     model: embeddingModel,
@@ -346,7 +350,7 @@ export const createResource = async (input: NewResourceParams) => {
 
     const embeddings = await generateEmbeddings(content);
     await db.insert(embeddingsTable).values(
-      embeddings.map(embedding => ({
+      embeddings.map((embedding) => ({
         resourceId: resource.id,
         ...embedding,
       }))
@@ -354,7 +358,9 @@ export const createResource = async (input: NewResourceParams) => {
 
     return 'Resource successfully created and embedded.';
   } catch (error) {
-    return error instanceof Error && error.message.length > 0 ? error.message : 'Error, please try again.';
+    return error instanceof Error && error.message.length > 0
+      ? error.message
+      : 'Error, please try again.';
   }
 };
 ```
@@ -377,13 +383,13 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const { messages, sendMessage } = useChat();
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+    <div className="stretch mx-auto flex w-full max-w-md flex-col py-24">
       <div className="space-y-4">
-        {messages.map(m => (
+        {messages.map((m) => (
           <div key={m.id} className="whitespace-pre-wrap">
             <div>
               <div className="font-bold">{m.role}</div>
-              {m.parts.map(part => {
+              {m.parts.map((part) => {
                 switch (part.type) {
                   case 'text':
                     return <p>{part.text}</p>;
@@ -395,17 +401,16 @@ export default function Chat() {
       </div>
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           sendMessage({ text: input });
           setInput('');
-        }}
-      >
+        }}>
         <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+          className="fixed bottom-0 mb-8 w-full max-w-md rounded border border-gray-300 p-2 shadow-xl"
           value={input}
           placeholder="Say something..."
-          onChange={e => setInput(e.currentTarget.value)}
+          onChange={(e) => setInput(e.currentTarget.value)}
         />
       </form>
     </div>
@@ -558,13 +563,13 @@ export default function Chat() {
   const [input, setInput] = useState('');
   const { messages, sendMessage } = useChat();
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+    <div className="stretch mx-auto flex w-full max-w-md flex-col py-24">
       <div className="space-y-4">
-        {messages.map(m => (
+        {messages.map((m) => (
           <div key={m.id} className="whitespace-pre-wrap">
             <div>
               <div className="font-bold">{m.role}</div>
-              {m.parts.map(part => {
+              {m.parts.map((part) => {
                 switch (part.type) {
                   case 'text':
                     return <p>{part.text}</p>;
@@ -573,7 +578,9 @@ export default function Chat() {
                     return (
                       <p>
                         call{part.state === 'output-available' ? 'ed' : 'ing'} tool: {part.type}
-                        <pre className="my-4 bg-zinc-100 p-2 rounded-sm">{JSON.stringify(part.input, null, 2)}</pre>
+                        <pre className="my-4 rounded-sm bg-zinc-100 p-2">
+                          {JSON.stringify(part.input, null, 2)}
+                        </pre>
                       </p>
                     );
                 }
@@ -584,17 +591,16 @@ export default function Chat() {
       </div>
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           sendMessage({ text: input });
           setInput('');
-        }}
-      >
+        }}>
         <input
-          className="fixed bottom-0 w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+          className="fixed bottom-0 mb-8 w-full max-w-md rounded border border-gray-300 p-2 shadow-xl"
           value={input}
           placeholder="Say something..."
-          onChange={e => setInput(e.currentTarget.value)}
+          onChange={(e) => setInput(e.currentTarget.value)}
         />
       </form>
     </div>
@@ -673,10 +679,12 @@ const generateChunks = (input: string): string[] => {
   return input
     .trim()
     .split('.')
-    .filter(i => i !== '');
+    .filter((i) => i !== '');
 };
 
-export const generateEmbeddings = async (value: string): Promise<Array<{ embedding: number[]; content: string }>> => {
+export const generateEmbeddings = async (
+  value: string
+): Promise<Array<{ embedding: number[]; content: string }>> => {
   const chunks = generateChunks(value);
   const { embeddings } = await embedMany({
     model: embeddingModel,
@@ -701,7 +709,7 @@ export const findRelevantContent = async (userQuery: string) => {
     .select({ name: embeddings.content, similarity })
     .from(embeddings)
     .where(gt(similarity, 0.5))
-    .orderBy(t => desc(t.similarity))
+    .orderBy((t) => desc(t.similarity))
     .limit(4);
   return similarGuides;
 };

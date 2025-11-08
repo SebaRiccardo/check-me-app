@@ -23,6 +23,7 @@
 ### 3️⃣ Test the App (2 min)
 
 1. Run your development build:
+
    ```bash
    pnpm run dev:dev-client
    ```
@@ -44,12 +45,14 @@
 ## 🎯 What You Should See
 
 ### ✅ Community Screen Features
+
 - Header: "Comunidad" with subtitle
 - "+" button in top right
 - List of verifications (or empty state)
 - Pull down to refresh
 
 ### ✅ Create Form (Bottom Sheet)
+
 - Slides up from bottom
 - All input fields visible
 - Category pills scroll horizontally
@@ -57,6 +60,7 @@
 - "Publicar Verificación" button
 
 ### ✅ Verification Card
+
 - Optional image at top
 - Category badge (colored)
 - Title and description
@@ -65,6 +69,7 @@
 ## 🔍 Verify Everything Works
 
 ### Test Checklist
+
 - [ ] SQL ran without errors
 - [ ] Storage bucket exists
 - [ ] Can open create form
@@ -79,31 +84,41 @@
 ## 🐛 Troubleshooting
 
 ### Problem: SQL fails
-**Solution**: 
+
+**Solution**:
+
 - Check if table already exists
 - Try dropping table first: `DROP TABLE IF EXISTS public.verifications;`
 - Re-run the SQL
 
 ### Problem: Can't see "Comunidad" tab
+
 **Solution**:
+
 - Restart the app
 - Check `app/(tabs)/_layout.tsx` includes community screen
 - Clear cache: `pnpm start --clear`
 
 ### Problem: Bottom sheet doesn't open
+
 **Solution**:
+
 - Check console for errors
 - Verify GestureHandlerRootView is in `app/_layout.tsx`
 - Restart app
 
 ### Problem: Image picker doesn't work
+
 **Solution**:
+
 - Grant photo permissions on device
 - iOS: Check Info.plist has photo permissions
 - Android: Check AndroidManifest.xml permissions
 
 ### Problem: Upload fails
+
 **Solution**:
+
 - Check you're logged in
 - Verify storage bucket exists
 - Check RLS policies are active
@@ -112,11 +127,13 @@
 ## 📊 Check Database
 
 ### View Verifications in Supabase
+
 1. Go to **Table Editor** → **verifications**
 2. Should see your test verification
 3. Check all fields are populated correctly
 
 ### View Images in Storage
+
 1. Go to **Storage** → **verification-images**
 2. Should see folder with your `user_id`
 3. Inside: uploaded images with timestamps
@@ -124,11 +141,13 @@
 ## 🎓 Next Steps
 
 ### Learn the Code
+
 - Read `VERIFICATION_FEATURE.md` for detailed docs
 - Check `hooks/use-verifications.ts` for custom hooks
 - Explore `components/create-verification-form.tsx` for form logic
 
 ### Enhance the Feature
+
 - Add edit functionality
 - Add delete button
 - Implement likes/reactions
@@ -136,6 +155,7 @@
 - Filter by category
 
 ### Test Edge Cases
+
 - Try creating without image
 - Test with very long text
 - Try different image formats
@@ -145,6 +165,7 @@
 ## 🆘 Need Help?
 
 ### Check Logs
+
 ```bash
 # Supabase logs
 Go to: Dashboard → Logs → select service
@@ -154,6 +175,7 @@ Check Expo console for errors
 ```
 
 ### Common Issues
+
 1. **Realtime not working**: Enable in Supabase settings
 2. **RLS blocking access**: Check policies in Table Editor
 3. **Storage upload fails**: Verify bucket is public
@@ -162,6 +184,7 @@ Check Expo console for errors
 ## ✨ Success Indicators
 
 You'll know everything works when:
+
 - ✅ Can create verifications
 - ✅ Can upload images
 - ✅ List updates automatically

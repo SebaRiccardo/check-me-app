@@ -7,6 +7,7 @@ This guide covers building your app for development, preview, and production usi
 ### First Time Setup
 
 1. **Install EAS CLI globally** (or use project's local version)
+
    ```bash
    npm install -g eas-cli
    # or use project version:
@@ -14,6 +15,7 @@ This guide covers building your app for development, preview, and production usi
    ```
 
 2. **Login to Expo**
+
    ```bash
    eas login
    ```
@@ -29,6 +31,7 @@ This guide covers building your app for development, preview, and production usi
 We have 4 build profiles configured in `eas.json`:
 
 ### 1. Development Build 🔧
+
 **Purpose**: For development with custom native modules (alternative to Expo Go)
 
 - Includes development tools
@@ -37,6 +40,7 @@ We have 4 build profiles configured in `eas.json`:
 - APK for Android (faster to build and install)
 
 ### 2. Preview Build 🔍
+
 **Purpose**: For testing before production release
 
 - Production-like build
@@ -45,6 +49,7 @@ We have 4 build profiles configured in `eas.json`:
 - Can test on real devices without dev tools
 
 ### 3. Preview Simulator 📱
+
 **Purpose**: For testing on iOS Simulator
 
 - Same as preview but for iOS simulator
@@ -52,6 +57,7 @@ We have 4 build profiles configured in `eas.json`:
 - Quick testing
 
 ### 4. Production Build 🎯
+
 **Purpose**: For app store distribution
 
 - Optimized and minified
@@ -81,6 +87,7 @@ eas build --profile development --platform all
 ```
 
 **After building**, install on your device and run:
+
 ```bash
 pnpm run dev:dev-client
 ```
@@ -128,6 +135,7 @@ eas build --profile production --platform all
 ### Android
 
 1. **Build the development client:**
+
    ```bash
    pnpm run build:dev:android
    ```
@@ -145,6 +153,7 @@ eas build --profile production --platform all
      ```
 
 5. **Run the dev server:**
+
    ```bash
    pnpm run dev:dev-client
    ```
@@ -154,11 +163,13 @@ eas build --profile production --platform all
 ### iOS
 
 1. **Build the development client:**
+
    ```bash
    pnpm run build:dev:ios
    ```
 
 2. **Register your device** with Apple (if not already)
+
    ```bash
    eas device:create
    ```
@@ -175,10 +186,12 @@ eas build --profile production --platform all
 ### Android
 
 **For Development/Preview builds:**
+
 - EAS automatically generates a keystore for you
 - No setup needed!
 
 **For Production builds:**
+
 - Use EAS-managed credentials (recommended)
 - Or provide your own keystore:
   ```bash
@@ -188,10 +201,12 @@ eas build --profile production --platform all
 ### iOS
 
 **Requirements:**
+
 - Apple Developer Account ($99/year)
 - App identifier registered in Apple Developer Portal
 
 **Setup:**
+
 ```bash
 # Let EAS manage your credentials (recommended)
 eas build --profile production --platform ios
@@ -208,23 +223,23 @@ eas credentials
 {
   "build": {
     "development": {
-      "developmentClient": true,      // Enables dev tools
-      "distribution": "internal",      // Not for app stores
+      "developmentClient": true, // Enables dev tools
+      "distribution": "internal", // Not for app stores
       "android": {
         "gradleCommand": ":app:assembleDebug",
-        "buildType": "apk"            // Faster to build/install
+        "buildType": "apk" // Faster to build/install
       }
     },
     "preview": {
-      "distribution": "internal",      // TestFlight/Internal
+      "distribution": "internal", // TestFlight/Internal
       "android": {
-        "buildType": "apk"            // Easy to share
+        "buildType": "apk" // Easy to share
       }
     },
     "production": {
-      "distribution": "store",         // For app stores
+      "distribution": "store", // For app stores
       "android": {
-        "buildType": "app-bundle"     // Required by Play Store
+        "buildType": "app-bundle" // Required by Play Store
       }
     }
   }
@@ -234,6 +249,7 @@ eas credentials
 ## 🎯 Common Workflows
 
 ### Workflow 1: Development (Daily Development)
+
 ```bash
 # Option A: Use Expo Go (if no custom native modules)
 pnpm dev
@@ -248,6 +264,7 @@ pnpm run dev:dev-client
 ```
 
 ### Workflow 2: Testing (Share with Testers)
+
 ```bash
 # Build preview
 pnpm run build:preview:android
@@ -257,6 +274,7 @@ pnpm run build:preview:android
 ```
 
 ### Workflow 3: Production Release
+
 ```bash
 # 1. Build for production
 pnpm run build:prod:android
@@ -298,16 +316,19 @@ pnpm run submit:android
 ## 📊 Build Status & Logs
 
 ### Check build status:
+
 ```bash
 eas build:list
 ```
 
 ### View build details:
+
 ```bash
 eas build:view [BUILD_ID]
 ```
 
 ### View build logs:
+
 ```bash
 # Logs are available in the web dashboard
 # Or in terminal output during build
@@ -318,6 +339,7 @@ eas build:view [BUILD_ID]
 Access your builds at: https://expo.dev/accounts/[your-account]/projects/check-me-app/builds
 
 Features:
+
 - ✅ View all builds
 - ✅ Download artifacts (APK/IPA)
 - ✅ View build logs
@@ -327,6 +349,7 @@ Features:
 ## 🚨 Troubleshooting
 
 ### Build fails with "credentials error"
+
 ```bash
 # Reset credentials
 eas credentials
@@ -336,6 +359,7 @@ eas build --clear-credentials
 ```
 
 ### "No bundle URL present" error
+
 ```bash
 # Make sure you're running dev server with:
 pnpm run dev:dev-client
@@ -345,12 +369,14 @@ pnpm dev  # This is for Expo Go only
 ```
 
 ### Android build fails
+
 ```bash
 # Clear cache and rebuild
 eas build --profile development --platform android --clear-cache
 ```
 
 ### iOS "No devices registered"
+
 ```bash
 # Register your device
 eas device:create
@@ -373,6 +399,7 @@ EAS builds can use environment variables from:
 
 1. **`.env` file** (committed to git)
 2. **EAS Secrets** (secure, not in git):
+
    ```bash
    eas secret:create --scope project --name SUPABASE_URL --value "your_value"
    eas secret:create --scope project --name SUPABASE_ANON_KEY --value "your_key"
@@ -394,12 +421,14 @@ EAS builds can use environment variables from:
 ## 📱 App Signing & Certificates
 
 ### Android
+
 - **Development**: Auto-generated keystore
-- **Production**: 
+- **Production**:
   - Option 1: Let EAS manage (recommended)
   - Option 2: Upload your own keystore
 
 ### iOS
+
 - **Development**: Requires Apple Developer account
 - **Production**: Distribution certificate + provisioning profile
   - Let EAS manage (recommended)

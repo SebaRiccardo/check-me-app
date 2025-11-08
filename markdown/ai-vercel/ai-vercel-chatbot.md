@@ -31,23 +31,29 @@ export default function Page() {
 
   return (
     <>
-      {messages.map(message => (
+      {messages.map((message) => (
         <div key={message.id}>
           {message.role === 'user' ? 'User: ' : 'AI: '}
-          {message.parts.map((part, index) => (part.type === 'text' ? <span key={index}>{part.text}</span> : null))}
+          {message.parts.map((part, index) =>
+            part.type === 'text' ? <span key={index}>{part.text}</span> : null
+          )}
         </div>
       ))}
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (input.trim()) {
             sendMessage({ text: input });
             setInput('');
           }
-        }}
-      >
-        <input value={input} onChange={e => setInput(e.target.value)} disabled={status !== 'ready'} placeholder="Say something..." />
+        }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          disabled={status !== 'ready'}
+          placeholder="Say something..."
+        />
         <button type="submit" disabled={status !== 'ready'}>
           Submit
         </button>
@@ -127,10 +133,12 @@ export default function Page() {
 
   return (
     <>
-      {messages.map(message => (
+      {messages.map((message) => (
         <div key={message.id}>
           {message.role === 'user' ? 'User: ' : 'AI: '}
-          {message.parts.map((part, index) => (part.type === 'text' ? <span key={index}>{part.text}</span> : null))}
+          {message.parts.map((part, index) =>
+            part.type === 'text' ? <span key={index}>{part.text}</span> : null
+          )}
         </div>
       ))}
 
@@ -144,15 +152,19 @@ export default function Page() {
       )}
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (input.trim()) {
             sendMessage({ text: input });
             setInput('');
           }
-        }}
-      >
-        <input value={input} onChange={e => setInput(e.target.value)} disabled={status !== 'ready'} placeholder="Say something..." />
+        }}>
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          disabled={status !== 'ready'}
+          placeholder="Say something..."
+        />
         <button type="submit" disabled={status !== 'ready'}>
           Submit
         </button>
@@ -190,9 +202,12 @@ export default function Chat() {
 
   return (
     <div>
-      {messages.map(m => (
+      {messages.map((m) => (
         <div key={m.id}>
-          {m.role}: {m.parts.map((part, index) => (part.type === 'text' ? <span key={index}>{part.text}</span> : null))}
+          {m.role}:{' '}
+          {m.parts.map((part, index) =>
+            part.type === 'text' ? <span key={index}>{part.text}</span> : null
+          )}
         </div>
       ))}
 
@@ -206,15 +221,14 @@ export default function Chat() {
       )}
 
       <form
-        onSubmit={e => {
+        onSubmit={(e) => {
           e.preventDefault();
           if (input.trim()) {
             sendMessage({ text: input });
             setInput('');
           }
-        }}
-      >
-        <input value={input} onChange={e => setInput(e.target.value)} disabled={error != null} />
+        }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} disabled={error != null} />
       </form>
     </div>
   );
@@ -317,10 +331,10 @@ const {
   onFinish: ({ message, messages, isAbort, isDisconnect, isError }) => {
     // use information to e.g. update other UI states
   },
-  onError: error => {
+  onError: (error) => {
     console.error('An error occurred:', error);
   },
-  onData: data => {
+  onData: (data) => {
     console.log('Received data part from server:', data);
   },
 });
@@ -435,14 +449,17 @@ export default function Chat() {
 
   return (
     <div>
-      {messages.map(m => (
+      {messages.map((m) => (
         <div key={m.id}>
-          {m.role}: {m.parts.map((part, index) => (part.type === 'text' ? <span key={index}>{part.text}</span> : null))}
+          {m.role}:{' '}
+          {m.parts.map((part, index) =>
+            part.type === 'text' ? <span key={index}>{part.text}</span> : null
+          )}
         </div>
       ))}
 
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
           if (input.trim()) {
             sendMessage(
@@ -455,9 +472,8 @@ export default function Chat() {
             );
             setInput('');
           }
-        }}
-      >
-        <input value={input} onChange={e => setInput(e.target.value)} />
+        }}>
+        <input value={input} onChange={(e) => setInput(e.target.value)} />
       </form>
     </div>
   );
@@ -501,11 +517,14 @@ return result.toUIMessageStreamResponse({
 ```tsx
 // Client: Access metadata via message.metadata
 {
-  messages.map(message => (
+  messages.map((message) => (
     <div key={message.id}>
-      {message.role}: {message.metadata?.createdAt && new Date(message.metadata.createdAt).toLocaleTimeString()}
+      {message.role}:{' '}
+      {message.metadata?.createdAt && new Date(message.metadata.createdAt).toLocaleTimeString()}
       {/* Render message content */}
-      {message.parts.map((part, index) => (part.type === 'text' ? <span key={index}>{part.text}</span> : null))}
+      {message.parts.map((part, index) =>
+        part.type === 'text' ? <span key={index}>{part.text}</span> : null
+      )}
       {/* Show token count if available */}
       {message.metadata?.totalTokens && <span>{message.metadata.totalTokens} tokens</span>}
     </div>
@@ -615,7 +634,7 @@ export async function POST(req: Request) {
     messages = [...messages, message];
   } else if (trigger === 'regenerate-assistant-message') {
     // Handle message regeneration - remove messages after messageId
-    const messageIndex = messages.findIndex(m => m.id === messageId);
+    const messageIndex = messages.findIndex((m) => m.id === messageId);
     if (messageIndex !== -1) {
       messages = messages.slice(0, messageIndex);
     }
@@ -655,7 +674,7 @@ export async function POST(req: Request) {
   });
 
   return result.toUIMessageStreamResponse({
-    onError: error => {
+    onError: (error) => {
       if (error == null) {
         return 'unknown error';
       }
@@ -734,17 +753,19 @@ export default function Chat() {
   });
 
   return (
-    <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-      {messages.map(m => (
+    <div className="stretch mx-auto flex w-full max-w-md flex-col py-24">
+      {messages.map((m) => (
         <div key={m.id} className="whitespace-pre-wrap">
           {m.role === 'user' ? 'User: ' : 'AI: '}
-          {m.parts.map(part => {
+          {m.parts.map((part) => {
             if (part.type === 'text') {
               return part.text;
             }
           })}
           {/* Render usage via metadata */}
-          {m.metadata?.totalUsage && <div>Total usage: {m.metadata?.totalUsage.totalTokens} tokens</div>}
+          {m.metadata?.totalUsage && (
+            <div>Total usage: {m.metadata?.totalUsage.totalTokens} tokens</div>
+          )}
         </div>
       ))}
     </div>
@@ -834,7 +855,7 @@ On the client side, you can access the reasoning parts of the message object.
 Reasoning parts have a `text` property that contains the reasoning content.
 
 ```tsx filename="app/page.tsx"
-messages.map(message => (
+messages.map((message) => (
   <div key={message.id}>
     {message.role === 'user' ? 'User: ' : 'AI: '}
     {message.parts.map((part, index) => {
@@ -883,14 +904,14 @@ There are two types of sources: `source-url` for web pages and `source-document`
 Here is an example that renders both types of sources:
 
 ```tsx filename="app/page.tsx"
-messages.map(message => (
+messages.map((message) => (
   <div key={message.id}>
     {message.role === 'user' ? 'User: ' : 'AI: '}
 
     {/* Render URL sources */}
     {message.parts
-      .filter(part => part.type === 'source-url')
-      .map(part => (
+      .filter((part) => part.type === 'source-url')
+      .map((part) => (
         <span key={`source-${part.id}`}>
           [
           <a href={part.url} target="_blank">
@@ -902,8 +923,8 @@ messages.map(message => (
 
     {/* Render document sources */}
     {message.parts
-      .filter(part => part.type === 'source-document')
-      .map(part => (
+      .filter((part) => part.type === 'source-document')
+      .map((part) => (
         <span key={`source-${part.id}`}>
           [<span>{part.title ?? `Document ${part.id}`}</span>]
         </span>
@@ -920,7 +941,7 @@ On the client side, you can access file parts of the message object
 and render them as images.
 
 ```tsx filename="app/page.tsx"
-messages.map(message => (
+messages.map((message) => (
   <div key={message.id}>
     {message.role === 'user' ? 'User: ' : 'AI: '}
     {message.parts.map((part, index) => {
@@ -967,7 +988,7 @@ export default function Page() {
   return (
     <div>
       <div>
-        {messages.map(message => (
+        {messages.map((message) => (
           <div key={message.id}>
             <div>{`${message.role}: `}</div>
 
@@ -989,7 +1010,7 @@ export default function Page() {
       </div>
 
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
           if (input.trim()) {
             sendMessage({
@@ -1003,11 +1024,10 @@ export default function Page() {
               fileInputRef.current.value = '';
             }
           }
-        }}
-      >
+        }}>
         <input
           type="file"
-          onChange={event => {
+          onChange={(event) => {
             if (event.target.files) {
               setFiles(event.target.files);
             }
@@ -1015,7 +1035,12 @@ export default function Page() {
           multiple
           ref={fileInputRef}
         />
-        <input value={input} placeholder="Send message..." onChange={e => setInput(e.target.value)} disabled={status !== 'ready'} />
+        <input
+          value={input}
+          placeholder="Send message..."
+          onChange={(e) => setInput(e.target.value)}
+          disabled={status !== 'ready'}
+        />
       </form>
     </div>
   );
@@ -1055,7 +1080,7 @@ export default function Page() {
   return (
     <div>
       <div>
-        {messages.map(message => (
+        {messages.map((message) => (
           <div key={message.id}>
             <div>{`${message.role}: `}</div>
 
@@ -1077,7 +1102,7 @@ export default function Page() {
       </div>
 
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault();
           if (input.trim()) {
             sendMessage({
@@ -1086,9 +1111,13 @@ export default function Page() {
             });
             setInput('');
           }
-        }}
-      >
-        <input value={input} placeholder="Send message..." onChange={e => setInput(e.target.value)} disabled={status !== 'ready'} />
+        }}>
+        <input
+          value={input}
+          placeholder="Send message..."
+          onChange={(e) => setInput(e.target.value)}
+          disabled={status !== 'ready'}
+        />
       </form>
     </div>
   );

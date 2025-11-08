@@ -51,7 +51,7 @@ import { useChat } from '@ai-sdk/react';
 export default function Chat() {
   const { messages } = useChat();
 
-  return messages.map(message => (
+  return messages.map((message) => (
     <Message from={message.role} key={message.id}>
       <MessageContent>
         <Response>{message.content}</Response>
@@ -101,10 +101,10 @@ const { messages, append, isLoading } = useChat();
 return (
   <Conversation>
     <ConversationContent>
-      {messages.map(message => (
+      {messages.map((message) => (
         <Message from={message.role}>
           <MessageContent>
-            {message.parts.map(part => {
+            {message.parts.map((part) => {
               if (part.type === 'text') return <Response>{part.text}</Response>;
               if (part.type === 'tool-call') return <Tool {...part} />;
             })}

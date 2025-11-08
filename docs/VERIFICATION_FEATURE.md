@@ -103,10 +103,10 @@ const { createVerification, isLoading, error } = useCreateVerification();
 const handleCreate = async () => {
   const verification = await createVerification({
     user_id: userId,
-    title: 'Título',
-    description: 'Descripción...',
+    title: "Título",
+    description: "Descripción...",
     news_id: null,
-    category: 'Política',
+    category: "Política",
     image_url: null,
   });
 };
@@ -115,7 +115,7 @@ const handleCreate = async () => {
 ### `uploadVerificationImage()` - Subir imagen
 
 ```typescript
-import { uploadVerificationImage } from '@/hooks/use-verifications';
+import { uploadVerificationImage } from "@/hooks/use-verifications";
 
 const imageUrl = await uploadVerificationImage(userId, imageUri);
 // Returns: string | null (public URL)
@@ -125,14 +125,14 @@ const imageUrl = await uploadVerificationImage(userId, imageUri);
 
 ```typescript
 const VERIFICATION_CATEGORIES = [
-  'Política',
-  'Salud',
-  'Tecnología',
-  'Economía',
-  'Ciencia',
-  'Deportes',
-  'Entretenimiento',
-  'Otro',
+  "Política",
+  "Salud",
+  "Tecnología",
+  "Economía",
+  "Ciencia",
+  "Deportes",
+  "Entretenimiento",
+  "Otro",
 ];
 ```
 
@@ -150,6 +150,7 @@ Bottom sheet con formulario completo:
 ```
 
 **Props:**
+
 - `onSuccess?: () => void` - Callback cuando se crea exitosamente
 
 ### VerificationCard
@@ -161,6 +162,7 @@ Card para mostrar una verificación:
 ```
 
 **Muestra:**
+
 - Imagen (si existe)
 - Badge de categoría
 - Título y descripción
@@ -209,14 +211,18 @@ Las verificaciones se actualizan automáticamente usando Supabase Realtime:
 ```typescript
 // En useVerifications()
 const channel = supabase
-  .channel('verifications-changes')
-  .on('postgres_changes', {
-    event: '*',
-    schema: 'public',
-    table: 'verifications',
-  }, () => {
-    fetchVerifications();
-  })
+  .channel("verifications-changes")
+  .on(
+    "postgres_changes",
+    {
+      event: "*",
+      schema: "public",
+      table: "verifications",
+    },
+    () => {
+      fetchVerifications();
+    },
+  )
   .subscribe();
 ```
 
@@ -231,6 +237,7 @@ if (error) {
 ```
 
 Estados de UI:
+
 - **Loading**: Spinner con mensaje
 - **Error**: Mensaje + botón reintentar
 - **Empty**: Mensaje motivacional para crear primera verificación
@@ -264,6 +271,7 @@ const bottomSheetRef = useRef<BottomSheet>(null);
 ### Error: "Image upload failed"
 
 Verifica:
+
 1. Storage bucket existe
 2. Políticas RLS están activas
 3. Usuario está autenticado
@@ -276,6 +284,7 @@ GestureHandlerRootView ya está configurado en `app/_layout.tsx`.
 ## Soporte
 
 Para problemas o preguntas:
+
 1. Revisa logs de Supabase Dashboard
 2. Verifica políticas RLS en Table Editor
 3. Consulta documentación de @gorhom/bottom-sheet

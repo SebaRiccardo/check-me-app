@@ -18,6 +18,7 @@ pnpm web        # Web browser
 ## 🏗️ Build Commands
 
 ### Android Development Build (Most Common)
+
 ```bash
 # Build development APK (do this once)
 pnpm run build:dev:android
@@ -28,11 +29,11 @@ pnpm run dev:dev-client
 
 ### All Build Profiles
 
-| Profile | Android | iOS | Both |
-|---------|---------|-----|------|
-| **Development** | `pnpm run build:dev:android` | `pnpm run build:dev:ios` | `pnpm run build:all:dev` |
-| **Preview** | `pnpm run build:preview:android` | `pnpm run build:preview:ios` | `pnpm run build:all:preview` |
-| **Production** | `pnpm run build:prod:android` | `pnpm run build:prod:ios` | `pnpm run build:all:prod` |
+| Profile         | Android                          | iOS                          | Both                         |
+| --------------- | -------------------------------- | ---------------------------- | ---------------------------- |
+| **Development** | `pnpm run build:dev:android`     | `pnpm run build:dev:ios`     | `pnpm run build:all:dev`     |
+| **Preview**     | `pnpm run build:preview:android` | `pnpm run build:preview:ios` | `pnpm run build:all:preview` |
+| **Production**  | `pnpm run build:prod:android`    | `pnpm run build:prod:ios`    | `pnpm run build:all:prod`    |
 
 ## 📦 Submission Commands
 
@@ -86,6 +87,7 @@ eas build --clear-credentials
 ## 🎯 Most Common Workflow
 
 ### First Time Setup
+
 ```bash
 # 1. Install dependencies
 pnpm install
@@ -102,18 +104,21 @@ pnpm run build:dev:android
 ```
 
 ### Daily Development
+
 ```bash
 # Just run dev server (after installing dev build once)
 pnpm run dev:dev-client
 ```
 
 ### Testing with Team
+
 ```bash
 # Build preview and share APK link
 pnpm run build:preview:android
 ```
 
 ### Production Release
+
 ```bash
 # 1. Build for production
 pnpm run build:prod:android
@@ -125,11 +130,13 @@ pnpm run submit:android
 ## 📱 Platform-Specific Notes
 
 ### Android
+
 - **Development**: APK (easier to install)
 - **Preview**: APK (easy to share)
 - **Production**: AAB (required by Play Store)
 
 ### iOS
+
 - **Requires**: Apple Developer Account ($99/year)
 - **Device Registration**: `eas device:create`
 - **TestFlight**: Used for preview builds
@@ -190,6 +197,7 @@ eas build:view [BUILD_ID]
 ## 🎯 Copy-Paste Commands
 
 ### Complete First Build Setup
+
 ```bash
 pnpm install
 eas login
@@ -198,16 +206,19 @@ pnpm run build:dev:android
 ```
 
 ### Daily Development
+
 ```bash
 pnpm run dev:dev-client
 ```
 
 ### Share with Testers
+
 ```bash
 pnpm run build:preview:android
 ```
 
 ### Release to Production
+
 ```bash
 pnpm run build:prod:android
 pnpm run submit:android

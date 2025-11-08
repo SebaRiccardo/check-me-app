@@ -24,6 +24,7 @@ pnpm install
 ### Configure Environment Variables
 
 1. Copy `.env.example` to `.env`:
+
    ```bash
    cp .env.example .env
    ```
@@ -90,6 +91,7 @@ pnpm dev
 ```
 
 Then:
+
 - Press `i` for iOS simulator (Mac only)
 - Press `a` for Android emulator
 - Press `w` for web browser
@@ -107,11 +109,13 @@ Then:
 ## Features to Try
 
 ### News Feed
+
 - Pull down to refresh
 - Scroll to load more articles
 - Tap an article to open in browser
 
 ### Profile
+
 - View your user info
 - Change theme (if implemented)
 - Sign out
@@ -119,22 +123,26 @@ Then:
 ## Troubleshooting
 
 ### "Network request failed"
+
 - Check your `.env` file has correct Supabase credentials
 - Ensure your Supabase project is not paused
 - Check internet connection
 
 ### "Invalid login credentials"
+
 - Make sure you verified your email
 - Check password is at least 6 characters
 - Try resetting password in Supabase dashboard
 
 ### Metro bundler issues
+
 ```bash
 pnpm clean
 pnpm dev
 ```
 
 ### No news articles showing
+
 - The News API has rate limits
 - Pull to refresh to try again
 - Check browser console for errors

@@ -1,9 +1,9 @@
-import { Input } from '@/components/ui/input';
-import { Text } from '@/components/ui/text';
-import type { Control, FieldValues, Path } from 'react-hook-form';
-import { useController } from 'react-hook-form';
-import type { TextInputProps } from 'react-native';
-import { View } from 'react-native';
+import { Input } from "@/components/ui/input";
+import { Text } from "@/components/ui/text";
+import type { Control, FieldValues, Path } from "react-hook-form";
+import { useController } from "react-hook-form";
+import type { TextInputProps } from "react-native";
+import { View } from "react-native";
 
 export type ControlledInputProps<T extends FieldValues> = TextInputProps & {
   control: Control<T>;
@@ -27,7 +27,9 @@ export function ControlledInput<T extends FieldValues>({
   return (
     <View className="mb-4">
       {label && (
-        <Text className="text-sm font-medium text-foreground mb-1">{label}</Text>
+        <Text className="mb-1 text-sm font-medium text-foreground">
+          {label}
+        </Text>
       )}
       <Input
         value={field.value}
@@ -35,9 +37,7 @@ export function ControlledInput<T extends FieldValues>({
         onBlur={field.onBlur}
         {...inputProps}
       />
-      {error && (
-        <Text className="text-destructive text-xs mt-1">{error}</Text>
-      )}
+      {error && <Text className="mt-1 text-xs text-destructive">{error}</Text>}
     </View>
   );
 }

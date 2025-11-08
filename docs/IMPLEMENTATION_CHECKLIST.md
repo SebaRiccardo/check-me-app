@@ -13,13 +13,16 @@
 ## 📁 Files Created (Already Complete)
 
 ### Backend & Database
+
 - [x] `supabase/migrations/create_verifications_table.sql`
 - [x] `supabase/SETUP_VERIFICATIONS.sql` (quick setup)
 
 ### Types & Interfaces
+
 - [x] `types/verification.ts`
 
 ### Business Logic (Hooks)
+
 - [x] `hooks/use-verifications.ts`
   - [x] useVerifications()
   - [x] useCreateVerification()
@@ -28,6 +31,7 @@
   - [x] uploadVerificationImage()
 
 ### UI Components
+
 - [x] `components/ui/textarea.tsx`
 - [x] `components/ui/controlled-input.tsx`
 - [x] `components/ui/controlled-textarea.tsx`
@@ -36,15 +40,18 @@
 - [x] `components/create-verification-form.tsx`
 
 ### Screens
+
 - [x] `app/(tabs)/community.tsx`
 
 ### Navigation
+
 - [x] Updated `app/(tabs)/_layout.tsx`
   - [x] Added "Comunidad" tab
   - [x] Added Users icon
   - [x] Configured tab order
 
 ### Documentation
+
 - [x] `VERIFICATION_FEATURE.md`
 - [x] `IMPLEMENTATION_SUMMARY.md`
 - [x] `QUICK_START_VERIFICATIONS.md`
@@ -53,6 +60,7 @@
 ## 🚀 Setup Tasks (For You to Complete)
 
 ### 1. Database Setup
+
 - [ ] Open Supabase Dashboard
 - [ ] Go to SQL Editor
 - [ ] Run `supabase/SETUP_VERIFICATIONS.sql`
@@ -60,12 +68,14 @@
 - [ ] Check table exists: Table Editor → verifications
 
 ### 2. Storage Verification
+
 - [ ] Go to Storage → Buckets
 - [ ] Verify `verification-images` bucket exists
 - [ ] Verify bucket is **Public**
 - [ ] Check policies are active (4 policies)
 
 ### 3. App Testing
+
 - [ ] Start development server
   ```bash
   pnpm run dev:dev-client
@@ -75,6 +85,7 @@
 - [ ] See empty state message
 
 ### 4. Create First Verification
+
 - [ ] Tap "+" floating button
 - [ ] Bottom sheet opens
 - [ ] Fill all required fields:
@@ -87,6 +98,7 @@
 - [ ] Verification appears in list
 
 ### 5. Test Features
+
 - [ ] Pull down to refresh
 - [ ] Create verification without image
 - [ ] Create verification with image
@@ -97,12 +109,14 @@
 - [ ] Test remove image button
 
 ### 6. Verify Realtime
+
 - [ ] Open app on 2 devices (or web + mobile)
 - [ ] Create verification on device 1
 - [ ] Watch it appear on device 2 automatically
 - [ ] ✅ Realtime working!
 
 ### 7. Check Database
+
 - [ ] Supabase Dashboard → Table Editor → verifications
 - [ ] See your test verifications
 - [ ] Verify all fields populated
@@ -110,6 +124,7 @@
 - [ ] Verify user_id matches your auth user
 
 ### 8. Check Storage
+
 - [ ] Storage → verification-images bucket
 - [ ] See folder with your user_id
 - [ ] See uploaded images with timestamps
@@ -119,6 +134,7 @@
 ## 🧪 Testing Checklist
 
 ### Functionality Tests
+
 - [ ] Create without image → Works
 - [ ] Create with image → Works
 - [ ] Form validation → Shows errors
@@ -131,6 +147,7 @@
 - [ ] Success message → Alert displays
 
 ### UI/UX Tests
+
 - [ ] Bottom sheet → Slides up smoothly
 - [ ] Bottom sheet → Dismisses by dragging
 - [ ] Category pills → Scroll horizontally
@@ -141,6 +158,7 @@
 - [ ] Error state → Shows retry button
 
 ### Data Tests
+
 - [ ] Verification saves to database
 - [ ] Image uploads to storage
 - [ ] Public URL generated
@@ -150,6 +168,7 @@
 - [ ] Optional fields work (news_id)
 
 ### Security Tests
+
 - [ ] Can only edit own verifications
 - [ ] Can view all verifications
 - [ ] RLS blocks unauthorized access
@@ -157,6 +176,7 @@
 - [ ] Storage policies enforce ownership
 
 ### Performance Tests
+
 - [ ] List scrolls smoothly
 - [ ] Images load fast
 - [ ] Form submits quickly
@@ -167,6 +187,7 @@
 ## 🐛 Known Issues to Check
 
 ### Potential Issues
+
 - [ ] Bottom sheet z-index conflicts
 - [ ] Image picker permissions denied
 - [ ] Storage upload fails
@@ -175,6 +196,7 @@
 - [ ] Validation errors not showing
 
 ### Solutions Prepared
+
 - [x] GestureHandlerRootView configured
 - [x] Permission requests in code
 - [x] Error handling in upload
@@ -185,6 +207,7 @@
 ## 📱 Device Testing
 
 ### iOS
+
 - [ ] iPhone simulator
 - [ ] Real iOS device
 - [ ] Image picker works
@@ -192,6 +215,7 @@
 - [ ] Bottom sheet dismisses
 
 ### Android
+
 - [ ] Android emulator
 - [ ] Real Android device
 - [ ] Image picker works
@@ -199,6 +223,7 @@
 - [ ] Bottom sheet dismisses
 
 ### Web (if applicable)
+
 - [ ] Browser testing
 - [ ] Responsive layout
 - [ ] Image picker fallback
@@ -206,12 +231,14 @@
 ## 📊 Monitoring Setup
 
 ### Supabase Dashboard
+
 - [ ] Enable Table Logs
 - [ ] Enable Storage Logs
 - [ ] Enable Realtime Logs
 - [ ] Set up alerts (optional)
 
 ### App Analytics
+
 - [ ] Track verification creations
 - [ ] Track image uploads
 - [ ] Track errors
@@ -228,6 +255,7 @@
 ## 🚀 Production Readiness
 
 ### Before Going Live
+
 - [ ] Test with real users (beta)
 - [ ] Load test with many verifications
 - [ ] Security audit RLS policies
@@ -238,6 +266,7 @@
 - [ ] Set up content moderation (optional)
 
 ### Optimization
+
 - [ ] Add pagination for large lists
 - [ ] Implement lazy loading images
 - [ ] Add caching strategy
@@ -245,6 +274,7 @@
 - [ ] Set up CDN for images
 
 ### Future Enhancements
+
 - [ ] Add likes/reactions
 - [ ] Add comments
 - [ ] Add user profiles
@@ -259,6 +289,7 @@
 ## ✨ Success Criteria
 
 You'll know it's working perfectly when:
+
 - ✅ No console errors
 - ✅ Smooth animations
 - ✅ Fast image uploads
@@ -271,18 +302,21 @@ You'll know it's working perfectly when:
 ## 📞 Support Resources
 
 ### Documentation
+
 - [x] All feature docs created
 - [x] Setup guides written
 - [x] Architecture documented
 - [x] Troubleshooting guide included
 
 ### External Docs
+
 - [ ] Review Supabase Storage docs
 - [ ] Review Bottom Sheet docs
 - [ ] Review React Hook Form docs
 - [ ] Review Zod docs
 
 ### Community
+
 - [ ] Join Supabase Discord
 - [ ] Join Expo Discord
 - [ ] Follow react-hook-form updates
@@ -292,6 +326,7 @@ You'll know it's working perfectly when:
 ## 🎯 Current Status: IMPLEMENTATION COMPLETE ✅
 
 All code is written and ready to use. Your task is to:
+
 1. Run the SQL setup (5 minutes)
 2. Test the feature (10 minutes)
 3. Deploy to production (when ready)

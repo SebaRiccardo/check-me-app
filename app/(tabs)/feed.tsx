@@ -1,9 +1,14 @@
-import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
-import { Text } from '@/components/ui/text';
-import { useNewsQuery } from '@/hooks/use-news-query';
-import type { NewsArticle } from '@/types/news';
-import { FlashList } from '@shopify/flash-list';
-import { useState } from 'react';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
+import { Text } from "@/components/ui/text";
+import { useNewsQuery } from "@/hooks/use-news-query";
+import type { NewsArticle } from "@/types/news";
+import { FlashList } from "@shopify/flash-list";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Image,
@@ -11,8 +16,8 @@ import {
   View,
   Pressable,
   Linking,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+} from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function NewsCard({ article }: { article: NewsArticle }) {
   const handlePress = () => {
@@ -27,18 +32,18 @@ function NewsCard({ article }: { article: NewsArticle }) {
         {article.image_url && (
           <Image
             source={{ uri: article.image_url }}
-            className="w-full h-48 rounded-t-lg"
+            className="h-48 w-full rounded-t-lg"
             resizeMode="cover"
           />
         )}
         <CardContent className="p-4">
-          <View className="flex-row items-center mb-2">
-            <Text className="text-xs text-primary font-semibold">
+          <View className="mb-2 flex-row items-center">
+            <Text className="text-xs font-semibold text-primary">
               {article.source_name}
             </Text>
             {article.pubDate && (
               <>
-                <Text className="text-xs text-muted-foreground mx-2">•</Text>
+                <Text className="mx-2 text-xs text-muted-foreground">•</Text>
                 <Text className="text-xs text-muted-foreground">
                   {new Date(article.pubDate).toLocaleDateString()}
                 </Text>
@@ -46,7 +51,7 @@ function NewsCard({ article }: { article: NewsArticle }) {
             )}
           </View>
 
-          <CardTitle className="text-base mb-2 text-card-foreground">
+          <CardTitle className="mb-2 text-base text-card-foreground">
             {article.title}
           </CardTitle>
 
@@ -63,7 +68,7 @@ function NewsCard({ article }: { article: NewsArticle }) {
 
 function LoadingFooter() {
   return (
-    <View className="py-4 items-center">
+    <View className="items-center py-4">
       <ActivityIndicator size="small" />
     </View>
   );
@@ -72,7 +77,7 @@ function LoadingFooter() {
 function EmptyState() {
   return (
     <View className="flex-1 items-center justify-center p-8">
-      <Text className="text-center text-muted-foreground text-base">
+      <Text className="text-center text-base text-muted-foreground">
         No se encontraron noticias. Desliza para actualizar.
       </Text>
     </View>
@@ -82,10 +87,10 @@ function EmptyState() {
 function ErrorState({ error }: { error: Error }) {
   return (
     <View className="flex-1 items-center justify-center p-8">
-      <Text className="text-center text-destructive text-base mb-2">
+      <Text className="mb-2 text-center text-base text-destructive">
         Error al cargar las noticias
       </Text>
-      <Text className="text-center text-muted-foreground text-sm">
+      <Text className="text-center text-sm text-muted-foreground">
         {error.message}
       </Text>
     </View>
@@ -122,7 +127,7 @@ export default function FeedScreen() {
 
   if (isLoading) {
     return (
-      <View className="flex-1 bg-background items-center justify-center">
+      <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator size="large" />
       </View>
     );
@@ -140,8 +145,8 @@ export default function FeedScreen() {
     <View className="flex-1 bg-background">
       {/* Header */}
       <View
-        className="bg-card border-b border-border px-6 pb-2"
-        style={{ paddingTop: insets.top  }}
+        className="border-b border-border bg-card px-6 pb-2"
+        style={{ paddingTop: insets.top }}
       >
         <Text className="text-3xl font-bold text-foreground">Noticias</Text>
       </View>
@@ -149,9 +154,14 @@ export default function FeedScreen() {
       {/* News List */}
       <FlashList
         data={articles}
-        renderItem={({ item }: { item: NewsArticle }) => <NewsCard article={item} />}
+        renderItem={({ item }: { item: NewsArticle }) => (
+          <NewsCard article={item} />
+        )}
         keyExtractor={(item: NewsArticle) => item.article_id}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: insets.bottom + 16 }}
+        contentContainerStyle={{
+          paddingTop: 16,
+          paddingBottom: insets.bottom + 16,
+        }}
         refreshControl={
           <RefreshControl refreshing={isRefreshing} onRefresh={handleRefresh} />
         }

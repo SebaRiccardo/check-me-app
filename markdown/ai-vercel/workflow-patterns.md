@@ -64,7 +64,11 @@ async function generateMarketingCopy(input: string) {
   });
 
   // If quality check fails, regenerate with more specific instructions
-  if (!qualityMetrics.hasCallToAction || qualityMetrics.emotionalAppeal < 7 || qualityMetrics.clarity < 7) {
+  if (
+    !qualityMetrics.hasCallToAction ||
+    qualityMetrics.emotionalAppeal < 7 ||
+    qualityMetrics.clarity < 7
+  ) {
     const { text: improvedCopy } = await generateText({
       model,
       prompt: `Rewrite this marketing copy with:
@@ -115,8 +119,10 @@ async function handleCustomerQuery(query: string) {
     model: classification.complexity === 'simple' ? 'openai/gpt-4o-mini' : 'openai/o4-mini',
     system: {
       general: 'You are an expert customer service agent handling general inquiries.',
-      refund: 'You are a customer service agent specializing in refund requests. Follow company policy and collect necessary information.',
-      technical: 'You are a technical support specialist with deep product knowledge. Focus on clear step-by-step troubleshooting.',
+      refund:
+        'You are a customer service agent specializing in refund requests. Follow company policy and collect necessary information.',
+      technical:
+        'You are a technical support specialist with deep product knowledge. Focus on clear step-by-step troubleshooting.',
     }[classification.type],
     prompt: query,
   });
@@ -141,7 +147,8 @@ async function parallelCodeReview(code: string) {
   const [securityReview, performanceReview, maintainabilityReview] = await Promise.all([
     generateObject({
       model,
-      system: 'You are an expert in code security. Focus on identifying security vulnerabilities, injection risks, and authentication issues.',
+      system:
+        'You are an expert in code security. Focus on identifying security vulnerabilities, injection risks, and authentication issues.',
       schema: z.object({
         vulnerabilities: z.array(z.string()),
         riskLevel: z.enum(['low', 'medium', 'high']),
@@ -153,7 +160,8 @@ async function parallelCodeReview(code: string) {
 
     generateObject({
       model,
-      system: 'You are an expert in code performance. Focus on identifying performance bottlenecks, memory leaks, and optimization opportunities.',
+      system:
+        'You are an expert in code performance. Focus on identifying performance bottlenecks, memory leaks, and optimization opportunities.',
       schema: z.object({
         issues: z.array(z.string()),
         impact: z.enum(['low', 'medium', 'high']),
@@ -165,7 +173,8 @@ async function parallelCodeReview(code: string) {
 
     generateObject({
       model,
-      system: 'You are an expert in code quality. Focus on code structure, readability, and adherence to best practices.',
+      system:
+        'You are an expert in code quality. Focus on code structure, readability, and adherence to best practices.',
       schema: z.object({
         concerns: z.array(z.string()),
         qualityScore: z.number().min(1).max(10),
@@ -223,11 +232,13 @@ async function implementFeature(featureRequest: string) {
 
   // Workers: Execute the planned changes
   const fileChanges = await Promise.all(
-    implementationPlan.files.map(async file => {
+    implementationPlan.files.map(async (file) => {
       // Each worker is specialized for the type of change
       const workerSystemPrompt = {
-        create: 'You are an expert at implementing new files following best practices and project patterns.',
-        modify: 'You are an expert at modifying existing code while maintaining consistency and avoiding regressions.',
+        create:
+          'You are an expert at implementing new files following best practices and project patterns.',
+        modify:
+          'You are an expert at modifying existing code while maintaining consistency and avoiding regressions.',
         delete: 'You are an expert at safely removing code while ensuring no breaking changes.',
       }[file.changeType];
 
@@ -309,7 +320,12 @@ async function translateWithFeedback(text: string, targetLanguage: string) {
     });
 
     // Check if quality meets threshold
-    if (evaluation.qualityScore >= 8 && evaluation.preservesTone && evaluation.preservesNuance && evaluation.culturallyAccurate) {
+    if (
+      evaluation.qualityScore >= 8 &&
+      evaluation.preservesTone &&
+      evaluation.preservesNuance &&
+      evaluation.culturallyAccurate
+    ) {
       break;
     }
 
