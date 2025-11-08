@@ -1,4 +1,4 @@
-import '@/lib/polyfills';
+import "@/lib/polyfills";
 import { Icon } from "@/components/ui/icon";
 import { Tabs } from "expo-router";
 import {
@@ -51,9 +51,10 @@ export default function TabLayout() {
           ),
         }}
       />
-            <Tabs.Screen
+      <Tabs.Screen
         name="chat"
         options={{
+          headerShown: false,
           title: "Char",
           tabBarIcon: ({ color, size }) => (
             <BotMessageSquare color={color} size={size} />

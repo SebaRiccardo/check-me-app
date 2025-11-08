@@ -90,7 +90,6 @@ export default function AuthScreen() {
     }
   };
 
-
   // Clean password when switching between sign in/up modes
   useEffect(() => {
     setPassword("");
@@ -180,12 +179,8 @@ export default function AuthScreen() {
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
                 editable={!isLoading}
-           
-              
               />
-
             </View>
-       
           </View>
 
           {/* Sign In/Up Button */}

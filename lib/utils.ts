@@ -1,28 +1,55 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import Constants from 'expo-constants';
+import Constants from "expo-constants";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-
 export const generateAPIUrl = (relativePath: string) => {
-  console.log(Constants.experienceUrl)
-  console.log(process.env.EXPO_PUBLIC_API_BASE_URL)
-  const origin = Constants.experienceUrl?.replace('exp://', 'http://');
+  const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
 
-  const path = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
+  if (process.env.NODE_ENV === "development") {
+    // En SDK 49+, usa hostUri en lugar de experienceUrl
+    const hostUri = Constants.expoConfig?.hostUri;
 
-  if (process.env.NODE_ENV === 'development') {
-    return origin?.concat(path);
+    if (!hostUri) {
+      // Fallback para cuando hostUri no esté disponible
+      console.warn("hostUri no disponible, usando localhost");
+      return `http://localhost:8081${path}`;
+    }
+
+    const origin = `http://${hostUri}`;
+    console.log("URL generada:", { origin, path, full: origin.concat(path) });
+    return origin.concat(path);
   }
 
   if (!process.env.EXPO_PUBLIC_API_BASE_URL) {
     throw new Error(
-      'EXPO_PUBLIC_API_BASE_URL environment variable is not defined',
+      "EXPO_PUBLIC_API_BASE_URL no está definida en las variables de entorno",
     );
   }
 
-  return process.env.EXPO_PUBLIC_API_BASE_URL?.concat(path);
+  return process.env.EXPO_PUBLIC_API_BASE_URL.concat(path);
 };
+
+// export const generateAPIUrl = (relativePath: string) => {
+//   console.log("host",Constants)
+
+//   const origin = Constants.experienceUrl?.replace('exp://', 'http://');
+
+//   const path = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
+
+//   if (process.env.NODE_ENV === 'development') {
+//     console.log({ origin,path});
+//     return origin?.concat(path);
+//   }
+
+//   if (!process.env.EXPO_PUBLIC_API_BASE_URL) {
+//     throw new Error(
+//       'EXPO_PUBLIC_API_BASE_URL environment variable is not defined',
+//     );
+//   }
+
+//   return process.env.EXPO_PUBLIC_API_BASE_URL?.concat(path);
+// };
