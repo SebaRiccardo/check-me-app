@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
           size="lg"
         >
           <Text className="text-lg font-semibold text-primary-foreground">
-            Iniciar Sesión o Registrarse
+            Comenzar
           </Text>
         </Button>
       </View>

@@ -200,14 +200,14 @@ export default function AuthScreen() {
           </Button>
 
           {/* Divider */}
-          <View className="mb-6 flex-row items-center">
+          {/* <View className="mb-6 flex-row items-center">
             <View className="h-px flex-1 bg-border" />
             <Text className="mx-4 text-sm text-muted-foreground">o</Text>
             <View className="h-px flex-1 bg-border" />
-          </View>
+          </View> */}
 
           {/* Google OAuth Button */}
-          <Button
+          {/* <Button
             variant="outline"
             className="mb-8"
             disabled={isLoading}
@@ -222,7 +222,7 @@ export default function AuthScreen() {
             <Text className="font-medium text-foreground">
               Continuar con Google
             </Text>
-          </Button>
+          </Button> */}
 
           {/* Toggle Sign In/Up */}
           <View className="flex-row items-center justify-center">

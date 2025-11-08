@@ -2,8 +2,10 @@ import { AuthContext } from "@/hooks/use-auth-context";
 import { supabase } from "@/lib/supabase/supabase";
 import type { Session } from "@supabase/supabase-js";
 import { PropsWithChildren, useEffect, useState } from "react";
+import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
 
 export default function AuthProvider({ children }: PropsWithChildren) {
+  useAsyncStorageDevTools();
   const [session, setSession] = useState<Session | undefined | null>();
   const [profile, setProfile] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);

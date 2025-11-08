@@ -12,7 +12,7 @@ import NetInfo from "@react-native-community/netinfo";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      gcTime: 1000 * 60 * 60 * 1, // 24 hours
       staleTime: 1000 * 60 * 5, // 5 minutes
       retry: 2,
       refetchOnWindowFocus: true,
@@ -24,7 +24,7 @@ const queryClient = new QueryClient({
 // Create async storage persister
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: AsyncStorage,
-  key: "TANSTACK_QUERY_CACHE",
+  key: "CHECK_ME_TANSTACK_QUERY_CACHE",
   throttleTime: 1000,
 });
 
@@ -52,7 +52,7 @@ export function QueryProvider({ children }: PropsWithChildren) {
       client={queryClient}
       persistOptions={{
         persister: asyncStoragePersister,
-        maxAge: 1000 * 60 * 60 * 24, // 24 hours
+        maxAge: 1000 * 60 * 60 * 1, // 24 hours
       }}
     >
       {children}

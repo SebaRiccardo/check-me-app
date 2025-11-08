@@ -92,16 +92,53 @@ function BotMessage({ message }: { message: UIMessage }) {
   );
 }
 
+const models = [
+  {
+    name: 'Gemini 2.0 Flash',
+    value: 'gemini-2.0-flash',
+  },
+  {
+    name: 'Gemini 2.5 Flash',
+    value: 'gemini-2.5-flash',
+  },
+];
+
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
   const scrollViewRef = useRef<ScrollView>(null);
   const { session, profile } = useAuthContext();
+  const [model, setModel] = useState<string>(models[0].value);
+  const [webSearch, setWebSearch] = useState(false);
   const [input, setInput] = useState("");
+
+  // Verificar si el usuario está autenticado
+  if (!session) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <View className="mb-4 size-16 items-center justify-center rounded-full bg-muted">
+          <Icon as={Bot} size={32} className="text-muted-foreground" />
+        </View>
+        <Text className="mb-2 text-center text-lg font-bold text-foreground">
+          Inicia sesión para usar el chat
+        </Text>
+        <Text className="text-center text-base text-muted-foreground">
+          Necesitas estar autenticado para poder chatear con el asistente
+        </Text>
+      </View>
+    );
+  }
 
   const { messages, error, sendMessage } = useChat({
     transport: new DefaultChatTransport({
       fetch: expoFetch as unknown as typeof globalThis.fetch,
       api: generateAPIUrl("/api/chat"),
+      headers: (): Record<string, string> => {
+        const token = session?.access_token;
+        if (!token) {
+          return {};
+        }
+        return { Authorization: `Bearer ${token}` };
+      },
     }),
     onError: (error) => console.error(error, "ERROR"),
   });
@@ -111,7 +148,15 @@ export default function ChatScreen() {
 
   const handleSend = () => {
     if (!input.trim()) return;
-    sendMessage({ text: input });
+    sendMessage(
+      { text: input },
+      {
+        body: {
+          models: model,
+          webSearch: webSearch,
+        },
+      },
+    );
     setInput("");
     // Scroll to bottom after sending
     setTimeout(() => {
@@ -121,17 +166,31 @@ export default function ChatScreen() {
 
   if (error) {
     return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <Text className="text-destructive">{error.message}</Text>
+      <View className="flex-1 items-center justify-center bg-background px-6">
+        <View className="mb-4 size-16 items-center justify-center rounded-full bg-destructive/10">
+          <Icon as={Bot} size={32} className="text-destructive" />
+        </View>
+        <Text className="mb-2 text-center text-lg font-bold text-foreground">
+          Error en el chat
+        </Text>
+        <Text className="text-center text-base text-destructive">
+          {error.message}
+        </Text>
+        {error.message.includes("autorizado") ||
+        error.message.includes("Sesión") ? (
+          <Text className="mt-2 text-center text-sm text-muted-foreground">
+            Por favor, cierra sesión y vuelve a iniciar sesión
+          </Text>
+        ) : null}
       </View>
     );
   }
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={"padding"}
       className="flex-1 bg-background"
-      keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 0}
+      // keyboardVerticalOffset={Platform.OS === "ios" ? 70 : 0}
     >
       {/* Header */}
       <View
@@ -144,7 +203,7 @@ export default function ChatScreen() {
           </View>
           <View>
             <Text className="text-xl font-bold text-foreground">
-              Asistente IA
+              ChackMe IA
             </Text>
             <Text className="text-sm text-muted-foreground">
               Siempre listo para ayudarte
@@ -189,11 +248,8 @@ export default function ChatScreen() {
       </ScrollView>
 
       {/* Input */}
-      <View
-        className="border-t border-border bg-card px-4 py-2"
-        style={{ paddingBottom: insets.bottom + 12 }}
-      >
-        <View className="flex-row items-center space-x-2">
+      <View className="px-2 py-2">
+        <View className="flex-row items-center space-x-4 ">
           <TextInput
             className="flex-1 rounded-full border border-border bg-background px-5 py-3 text-base text-foreground"
             placeholder="Escribe un mensaje..."
@@ -208,7 +264,7 @@ export default function ChatScreen() {
             onPress={handleSend}
             disabled={!input.trim()}
             size="icon"
-            className="ml-2 size-12 rounded-full"
+            className="ml-1 size-12 rounded-full"
           >
             <Icon as={Send} size={22} className="text-primary-foreground" />
           </Button>

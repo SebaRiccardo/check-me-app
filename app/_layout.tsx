@@ -27,6 +27,15 @@ function RootNavigator() {
     <Stack>
       <Stack.Protected guard={isLoggedIn}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="create-verification"
+          options={{
+            presentation: "modal",
+            headerShown: false,
+            headerTitle: "Nueva Verificación",
+            headerBackTitle: "Cancelar",
+          }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!isLoggedIn}>
         <Stack.Screen name="welcome" options={{ headerShown: false }} />
