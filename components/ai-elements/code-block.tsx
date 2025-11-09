@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@/lib/utils";
 import type { Element } from "hast";
 import { CheckIcon, CopyIcon } from "lucide-react-native";
 import {
@@ -12,6 +13,7 @@ import {
   useState,
 } from "react";
 import { type BundledLanguage, codeToHtml, type ShikiTransformer } from "shiki";
+import { Button } from "../ui/button";
 
 type CodeBlockProps = HTMLAttributes<HTMLDivElement> & {
   code: string;

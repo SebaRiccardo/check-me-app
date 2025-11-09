@@ -11,12 +11,13 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#6366f1"
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.checkmeapp"
+      "bundleIdentifier": "com.yourcompany.checkmeapp",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "edgeToEdgeEnabled": true,
@@ -24,7 +25,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.yourcompany.checkmeapp"
+      "package": "com.yourcompany.checkmeapp",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
@@ -34,6 +36,12 @@
     "plugins": ["expo-router", "expo-secure-store"],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "a616b2ab-33a2-4fbd-872e-180740f8d0bf"
+      }
     }
   }
 }

@@ -3,10 +3,25 @@ import { Text } from "@/components/ui/text";
 import { useRouter } from "expo-router";
 import { View, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useOnboarding } from "@/hooks/use-onboarding";
+import { useEffect } from "react";
 
 export default function WelcomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { isOnboardingComplete, isLoading } = useOnboarding();
+
+  // Redirect to onboarding if not completed
+  useEffect(() => {
+    if (!isLoading && isOnboardingComplete === false) {
+      router.push("/onboarding" as any);
+    }
+  }, [isOnboardingComplete, isLoading]);
+
+  // Don't render welcome screen if we're about to redirect
+  if (isLoading || isOnboardingComplete === false) {
+    return null;
+  }
 
   return (
     <View className="flex-1 bg-background" style={{ paddingTop: insets.top }}>
@@ -15,15 +30,11 @@ export default function WelcomeScreen() {
         {/* Placeholder for app logo/image */}
 
         <Image
-          source={require("@/assets/images/undraw_reviewed-docs_tng3.png")}
-          className="size-96"
+          source={require("@/assets/images/wordmark.png")}
+          className="w-96 h-20 "
           resizeMode="contain"
         />
 
-        {/* App Name */}
-        <Text className="mb-2 text-4xl font-bold text-foreground">
-          Check<Text className="text-5xl text-primary">ME</Text>
-        </Text>
         <Text className="mb-12 text-center text-base text-muted-foreground">
           Tus noticias y actualizaciones diarias
         </Text>

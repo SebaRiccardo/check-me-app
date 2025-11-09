@@ -8,8 +8,9 @@ import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import "react-native-reanimated";
 import { useAuthContext } from "@/hooks/use-auth-context";
+import { useOnboarding } from "@/hooks/use-onboarding";
 
-import { StyleSheet } from "react-native";
+import { StyleSheet, View, ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import AuthProvider from "@/providers/auth-provider";
@@ -24,8 +25,22 @@ export {
 // Separate RootNavigator so we can access the AuthContext
 function RootNavigator() {
   const { isLoggedIn } = useAuthContext();
+  const { isOnboardingComplete, isLoading } = useOnboarding();
+
+  // Show loading while checking onboarding status
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <Stack>
+      {/* Public screens - accessible to all */}
+      <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+
       <Stack.Protected guard={isLoggedIn}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen

@@ -1,0 +1,29 @@
+{
+  "onboarding_steps": [
+    {
+      "step": 1,
+      "title": "Las noticias pueden ser confusas",
+      "subtitle": "En un mundo lleno de información, no siempre es fácil distinguir qué es real y qué no. Por eso existimos."
+    },
+    {
+      "step": 2,
+      "title": "Vos sos parte de la solución",
+      "subtitle": "Compartí tus verificaciones y ayudanos a construir una comunidad más informada."
+    },
+    {
+      "step": 3,
+      "title": "Verificamos cada detalle",
+      "subtitle": "Nuestro equipo de expertos y tecnología de IA revisan minuciosamente cada verificación antes de publicarla."
+    },
+    {
+      "step": 4,
+      "title": "Tu aporte suma",
+      "subtitle": "Una vez verificada, tu contribución estará disponible para que toda la comunidad pueda acceder a información confiable."
+    },
+    {
+      "step": 5,
+      "title": "¡Empecemos juntos!",
+      "subtitle": "Unite a una comunidad comprometida con la verdad y empezá a verificar noticias hoy mismo."
+    }
+  ]
+}

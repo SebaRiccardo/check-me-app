@@ -4,7 +4,9 @@ import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuthContext } from "@/hooks/use-auth-context";
+import { useOnboarding } from "@/hooks/use-onboarding";
 import { supabase } from "@/lib/supabase/supabase";
+import { router } from "expo-router";
 import {
   LogOut,
   Settings,
@@ -16,6 +18,7 @@ import {
   Globe,
   Smartphone,
   User,
+  HelpCircle,
 } from "lucide-react-native";
 import { Alert, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -64,6 +67,7 @@ function SectionHeader({ title }: { title: string }) {
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const { session, profile } = useAuthContext();
+  const { resetOnboarding } = useOnboarding();
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -78,6 +82,28 @@ export default function ProfileScreen() {
             const { error } = await supabase.auth.signOut();
             if (error) {
               Alert.alert("Error", error.message);
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleRestartOnboarding = async () => {
+    Alert.alert(
+      "Reiniciar Tutorial",
+      "¿Querés ver el tutorial de introducción nuevamente?",
+      [
+        { text: "Cancelar", style: "cancel" },
+        {
+          text: "Ver Tutorial",
+          onPress: async () => {
+            const success = await resetOnboarding();
+            if (success) {
+              // Sign out to trigger onboarding flow
+              await supabase.auth.signOut();
+            } else {
+              Alert.alert("Error", "No se pudo reiniciar el tutorial");
             }
           },
         },
@@ -230,7 +256,12 @@ export default function ProfileScreen() {
       </Card>
 
       {/* Actions */}
-      <View className="px-4">
+      <View className="px-4 gap-3">
+        <Button variant="outline" onPress={handleRestartOnboarding}>
+          <Icon as={HelpCircle} size={20} className="mr-2 text-primary" />
+          <Text className="font-semibold text-primary">Ver Tutorial</Text>
+        </Button>
+
         <Button
           variant="outline"
           onPress={handleSignOut}
