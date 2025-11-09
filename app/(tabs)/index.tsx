@@ -1,17 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { CreateVerificationForm } from "@/components/create-verification-bottom-sheet-form";
 import { VerificationCard } from "@/components/verification-card";
-import { AdminApprovalBottomSheet } from "@/components/admin-approval-bottom-sheet";
 import {
   useVerifications,
   type VerificationWithProfile,
 } from "@/hooks/use-verifications";
-import BottomSheet from "@gorhom/bottom-sheet";
 import { FlashList } from "@shopify/flash-list";
-import { Plus, RefreshCcw, Clock, CheckCircle2 } from "lucide-react-native";
-import { useCallback, useRef, useState, useEffect } from "react";
+import { RefreshCcw, CheckCircle2 } from "lucide-react-native";
+import { useCallback, useState, useEffect } from "react";
 import {
   ActivityIndicator,
   RefreshControl,
@@ -19,7 +16,6 @@ import {
   Pressable,
   Image,
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect } from "@react-navigation/native";
 import { useAuth } from "@/hooks/use-auth-context";
@@ -87,12 +83,8 @@ function ErrorState({ error, onRetry }: { error: Error; onRetry: () => void }) {
 
 export default function CommunityScreen() {
   const insets = useSafeAreaInsets();
-  const bottomSheetRef = useRef<BottomSheet>(null);
-  const approvalBottomSheetRef = useRef<BottomSheet>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showPending, setShowPending] = useState(false);
-  const [selectedVerification, setSelectedVerification] =
-    useState<VerificationWithProfile | null>(null);
   const { session } = useAuth();
   const {
     verifications,
@@ -135,32 +127,18 @@ export default function CommunityScreen() {
     setShowPending((prev) => !prev);
   };
 
-  const handleVerificationPress = (verification: VerificationWithProfile) => {
-    if (isAdmin && showPending) {
-      setSelectedVerification(verification);
-      approvalBottomSheetRef.current?.expand();
-    }
-  };
-
-  const handleApprove = async (id: string): Promise<boolean> => {
+  const handleApprove = async (id: string) => {
     const success = await approveVerification(id);
     if (success && isAdmin) {
       await fetchPendingCount();
     }
-    return success;
   };
 
-  const handleReject = async (id: string): Promise<boolean> => {
+  const handleReject = async (id: string) => {
     const success = await rejectVerification(id);
     if (success && isAdmin) {
       await fetchPendingCount();
     }
-    return success;
-  };
-
-  const handleCloseApprovalSheet = () => {
-    approvalBottomSheetRef.current?.close();
-    setSelectedVerification(null);
   };
 
   return (
@@ -201,7 +179,7 @@ export default function CommunityScreen() {
                         showPending ? "text-primary" : "text-white",
                       )}
                     >
-                      {showPending ? "Ver Auditadas" : "Sin auditar"}
+                      {showPending ? "Ver Auditadas" : "Ver sin auditar"}
                     </Text>
                   </View>
                 </Pressable>
@@ -227,16 +205,13 @@ export default function CommunityScreen() {
         <FlashList
           data={verifications}
           renderItem={({ item }: { item: VerificationWithProfile }) => (
-            <Pressable
-              onPress={() => handleVerificationPress(item)}
-              disabled={!isAdmin || !showPending}
-            >
-              <VerificationCard
-                verification={item}
-                isAdmin={isAdmin}
-                isPendingView={showPending}
-              />
-            </Pressable>
+            <VerificationCard
+              verification={item}
+              isAdmin={isAdmin}
+              isPendingView={showPending}
+              onApprove={handleApprove}
+              onReject={handleReject}
+            />
           )}
           keyExtractor={(item: VerificationWithProfile) => item.id}
           contentContainerStyle={{
@@ -251,15 +226,6 @@ export default function CommunityScreen() {
           ListEmptyComponent={<EmptyState isPendingView={showPending} />}
         />
       )}
-
-      {/* Admin Approval Bottom Sheet */}
-      <AdminApprovalBottomSheet
-        ref={approvalBottomSheetRef}
-        verification={selectedVerification}
-        onApprove={handleApprove}
-        onReject={handleReject}
-        onClose={handleCloseApprovalSheet}
-      />
     </View>
   );
 }

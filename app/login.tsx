@@ -106,7 +106,7 @@ export default function AuthScreen() {
           paddingBottom: insets.bottom + 20,
         }}
       >
-        <View className="flex-1 px-6">
+        <View className="flex-1 px-4">
           {/* Header */}
           <View className="mb-12">
             <Text className="mb-2 text-4xl font-bold text-foreground">
@@ -197,7 +197,7 @@ export default function AuthScreen() {
           <Button
             onPress={handleAuth}
             disabled={isLoading}
-            className="mb-6"
+            className="mb-6 h-16"
             size="lg"
           >
             <Text className="text-base font-bold text-primary-foreground">

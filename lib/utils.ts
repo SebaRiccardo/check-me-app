@@ -8,21 +8,22 @@ export function cn(...inputs: ClassValue[]) {
 
 export const generateAPIUrl = (relativePath: string) => {
   const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
+  console.warn(path);
 
-  if (process.env.NODE_ENV === "development") {
-    // En SDK 49+, usa hostUri en lugar de experienceUrl
-    const hostUri = Constants.expoConfig?.hostUri;
+  // if (process.env.NODE_ENV === "development") {
+  //   // En SDK 49+, usa hostUri en lugar de experienceUrl
+  //   const hostUri = Constants.expoConfig?.hostUri;
 
-    if (!hostUri) {
-      // Fallback para cuando hostUri no esté disponible
-      //console.warn("hostUri no disponible, usando localhost");
-      return `http://localhost:8081${path}`;
-    }
+  //   if (!hostUri) {
+  //     // Fallback para cuando hostUri no esté disponible
 
-    const origin = `http://${hostUri}`;
-    //console.log("URL generada:", { origin, path, full: origin.concat(path) });
-    return origin.concat(path);
-  }
+  //     return `http://localhost:8081${path}`;
+  //   }
+
+  //   const origin = `http://${hostUri}`;
+  //   console.log("URL generada:", { origin, path, full: origin.concat(path) });
+  //   return origin.concat(path);
+  // }
 
   if (!process.env.EXPO_PUBLIC_API_BASE_URL) {
     throw new Error(
@@ -30,7 +31,9 @@ export const generateAPIUrl = (relativePath: string) => {
     );
   }
 
-  return process.env.EXPO_PUBLIC_API_BASE_URL.concat(path);
+  const finalPath = process.env.EXPO_PUBLIC_API_BASE_URL.concat(path);
+  console.log("URL de producción generada:", finalPath);
+  return finalPath;
 };
 
 // export const generateAPIUrl = (relativePath: string) => {

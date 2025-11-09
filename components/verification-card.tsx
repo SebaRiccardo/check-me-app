@@ -1,14 +1,17 @@
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
+import { Button } from "@/components/ui/button";
 import type { VerificationWithProfile } from "@/hooks/use-verifications";
-import { ExternalLink, Clock } from "lucide-react-native";
-import { Image, View, Pressable, Linking, Alert, Button } from "react-native";
+import { ExternalLink, Clock, CheckCircle, XCircle } from "lucide-react-native";
+import { Image, View, Pressable, Linking, Alert } from "react-native";
 import { Badge } from "./ui/badge";
 
 type VerificationCardProps = {
   verification: VerificationWithProfile;
   isAdmin?: boolean;
   isPendingView?: boolean;
+  onApprove?: (id: string) => void;
+  onReject?: (id: string) => void;
 };
 
 const getInitials = (name: string | null | undefined) => {
@@ -25,6 +28,8 @@ export function VerificationCard({
   verification,
   isAdmin,
   isPendingView,
+  onApprove,
+  onReject,
 }: VerificationCardProps) {
   const formattedDate = new Date(verification.created_at).toLocaleDateString(
     "es-ES",
@@ -133,12 +138,12 @@ export function VerificationCard({
                   </Text>
                 </View>
               </View>
-              {isPendingView && isAdmin && (
+              {/* {isPendingView && isAdmin && (
                 <Badge variant="destructive">
                   <Icon as={Clock} size={16} className=" text-white" />
                   <Text className="text-sm font-medium">Sin revisar</Text>
                 </Badge>
-              )}
+              )} */}
             </View>
           </View>
 
@@ -184,13 +189,66 @@ export function VerificationCard({
           </View>
 
           {/* Image */}
-          {verification.image_url && !isPendingView && (
+          {verification.image_url && (
             <View className="mb-3 overflow-hidden rounded-2xl border border-gray-200">
               <Image
                 source={{ uri: verification.image_url }}
                 style={{ width: "100%", height: 280 }}
                 resizeMode="cover"
               />
+            </View>
+          )}
+
+          {/* Admin Action Buttons - Only in pending view */}
+          {isAdmin && isPendingView && onApprove && onReject && (
+            <View className="mt-3 flex-row gap-3">
+              <Button
+                onPress={() => {
+                  Alert.alert(
+                    "Aprobar Verificación",
+                    "¿Estás seguro de que deseas aprobar esta verificación? Se publicará en la comunidad.",
+                    [
+                      {
+                        text: "Cancelar",
+                        style: "cancel",
+                      },
+                      {
+                        text: "Aprobar",
+                        onPress: () => onApprove(verification.id),
+                      },
+                    ],
+                  );
+                }}
+                className="flex-1 flex-row items-center justify-center bg-green-600"
+              >
+                <Icon as={CheckCircle} size={18} className="mr-2 text-white" />
+                <Text className="font-semibold text-white">Aprobar</Text>
+              </Button>
+
+              <Button
+                onPress={() => {
+                  Alert.alert(
+                    "Rechazar Verificación",
+                    "¿Estás seguro de que deseas rechazar esta verificación? Esta acción no se puede deshacer.",
+                    [
+                      {
+                        text: "Cancelar",
+                        style: "cancel",
+                      },
+                      {
+                        text: "Rechazar",
+                        style: "destructive",
+                        onPress: () => onReject(verification.id),
+                      },
+                    ],
+                  );
+                }}
+                variant="destructive"
+                className="flex-1 flex-row items-center justify-center"
+              >
+                <Icon as={XCircle} size={18} className="mr-2 text-white" />
+                <Text className="font-semibold text-white">Rechazar</Text>
+              </Button>
             </View>
           )}
         </View>

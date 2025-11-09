@@ -104,7 +104,7 @@ export default function ChatScreen() {
   useEffect(() => {
     if (isInitialized && userId && !currentChatId && !hasInitialized) {
       setHasInitialized(true);
-      
+
       // If there are existing chats, load the most recent one
       if (chats.length > 0) {
         const lastChat = chats[0]; // Chats are ordered by updated_at DESC
@@ -120,7 +120,14 @@ export default function ChatScreen() {
         });
       }
     }
-  }, [isInitialized, userId, currentChatId, chats, hasInitialized, createNewChat]);
+  }, [
+    isInitialized,
+    userId,
+    currentChatId,
+    chats,
+    hasInitialized,
+    createNewChat,
+  ]);
 
   if (!session) {
     return (
@@ -269,7 +276,7 @@ export default function ChatScreen() {
               </View>
               <View>
                 <Text className="text-lg font-bold text-foreground">
-                  Hola, me llamo Clarity 
+                  Hola, me llamo Clarity
                 </Text>
                 <Text className="text-sm text-gray-500">
                   Tu asistente de verificación
@@ -439,7 +446,6 @@ export default function ChatScreen() {
                   onPressedChange={setWebSearch}
                   variant="outline"
                   size="sm"
-                
                 >
                   <ToggleIcon as={Globe} />
                   <Text className="text-sm font-medium">

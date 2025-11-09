@@ -14,6 +14,8 @@
     "build:dev:android": "eas build --profile development --platform android",
     "build:preview:android": "eas build --profile preview --platform android",
     "build:prod:android": "eas build --profile production --platform android",
+    "export:routes": "npx expo export --platform web --no-ssg",
+    "deploy:routes": "eas deploy",
     "submit:android": "eas submit --platform android",
     "type-check": "tsc  --noemit",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,css,md}\"",
@@ -87,7 +89,6 @@
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@types/react": "~19.1.10",
-    "eas-cli": "^16.26.0",
     "prettier": "^3.6.2",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "supabase": "^2.54.11",

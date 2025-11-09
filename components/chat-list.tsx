@@ -44,9 +44,7 @@ export function ChatList({
     <View className="flex-1 bg-background">
       <View className="border-b border-border bg-card px-4 py-3">
         <View className="flex-row items-center justify-between">
-          <Text className="text-lg font-bold text-foreground">
-            Chats
-          </Text>
+          <Text className="text-lg font-bold text-foreground">Chats</Text>
           <TouchableOpacity
             onPress={onNewChat}
             className="rounded-lg flex-row gap-2 px-3 items-center bg-primary p-2"
@@ -114,16 +112,17 @@ export function ChatList({
                 </Text>
               </View>
             </View>
-            {currentChatId !== item.id &&
-            <TouchableOpacity
-              onPress={(e) => {
-                e.stopPropagation();
-                onDeleteChat(item.id);
-              }}
-              className="ml-2 rounded-lg bg-destructive/10 p-2"
-            >
-              <Icon as={Trash2} size={16} className="text-destructive" />
-            </TouchableOpacity>}
+            {currentChatId !== item.id && (
+              <TouchableOpacity
+                onPress={(e) => {
+                  e.stopPropagation();
+                  onDeleteChat(item.id);
+                }}
+                className="ml-2 rounded-lg bg-destructive/10 p-2"
+              >
+                <Icon as={Trash2} size={16} className="text-destructive" />
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
         )}
         ListEmptyComponent={
