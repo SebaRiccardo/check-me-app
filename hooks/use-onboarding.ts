@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ONBOARDING_COMPLETED_KEY } from "@/app/onboarding";
+
+export const ONBOARDING_COMPLETED_KEY = "@onboarding_completed";
 
 /**
  * Hook to check if user has completed onboarding

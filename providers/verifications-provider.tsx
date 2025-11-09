@@ -28,10 +28,15 @@ interface VerificationsContextValue {
   isLoading: boolean;
   error: Error | null;
   isSubscribed: boolean;
+  pendingCount: number;
 
   // Acciones de fetch
-  fetchVerifications: (isRefreshing?: boolean) => Promise<void>;
-  refetch: () => Promise<void>;
+  fetchVerifications: (
+    isRefreshing?: boolean,
+    showPending?: boolean,
+  ) => Promise<void>;
+  refetch: (showPending?: boolean) => Promise<void>;
+  fetchPendingCount: () => Promise<void>;
 
   // Suscripción en tiempo real
   subscribe: () => RealtimeChannel;
@@ -46,6 +51,10 @@ interface VerificationsContextValue {
     updates: VerificationUpdate,
   ) => Promise<VerificationWithProfile | null>;
   deleteVerification: (id: string) => Promise<boolean>;
+
+  // Admin operations
+  approveVerification: (id: string) => Promise<boolean>;
+  rejectVerification: (id: string) => Promise<boolean>;
 }
 
 export const VerificationsContext = createContext<
@@ -70,6 +79,7 @@ export function VerificationsProvider({
   const [error, setError] = useState<Error | null>(null);
   const [channel, setChannel] = useState<RealtimeChannel | null>(null);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [pendingCount, setPendingCount] = useState(0);
 
   /**
    * Obtiene el perfil asociado a una verificación
@@ -94,15 +104,16 @@ export function VerificationsProvider({
   /**
    * Obtiene todas las verificaciones con sus perfiles
    */
-  const fetchVerifications = useCallback(async (isRefreshing?: boolean) => {
-    try {
-      if (!isRefreshing) setIsLoading(true);
-      setError(null);
+  const fetchVerifications = useCallback(
+    async (isRefreshing?: boolean, showPending: boolean = false) => {
+      try {
+        if (!isRefreshing) setIsLoading(true);
+        setError(null);
 
-      const { data, error: fetchError } = await supabase
-        .from("verifications")
-        .select(
-          `
+        const query = supabase
+          .from("verifications")
+          .select(
+            `
           *,
           profiles!verifications_user_id_fkey1 (
             avatar_url,
@@ -110,19 +121,30 @@ export function VerificationsProvider({
             username
           )
         `,
-        )
-        .order("created_at", { ascending: false });
+          )
+          .order("created_at", { ascending: false });
 
-      if (fetchError) throw fetchError;
+        // Filter based on admin_approved status
+        if (showPending) {
+          query.eq("admin_approved", false);
+        } else {
+          query.eq("admin_approved", true);
+        }
 
-      setVerifications(data || []);
-    } catch (err) {
-      setError(err as Error);
-      console.error("Error fetching verifications:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+        const { data, error: fetchError } = await query;
+
+        if (fetchError) throw fetchError;
+
+        setVerifications(data || []);
+      } catch (err) {
+        setError(err as Error);
+        console.error("Error fetching verifications:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [],
+  );
 
   /**
    * Suscribe a cambios en tiempo real y actualiza el estado local
@@ -326,6 +348,83 @@ export function VerificationsProvider({
     [isSubscribed],
   );
 
+  /**
+   * Obtiene el conteo de verificaciones pendientes
+   */
+  const fetchPendingCount = useCallback(async () => {
+    try {
+      const { count, error: countError } = await supabase
+        .from("verifications")
+        .select("*", { count: "exact", head: true })
+        .eq("admin_approved", false);
+
+      if (countError) throw countError;
+
+      setPendingCount(count || 0);
+    } catch (err) {
+      console.error("Error fetching pending count:", err);
+      setPendingCount(0);
+    }
+  }, []);
+
+  /**
+   * Aprueba una verificación (admin only)
+   */
+  const approveVerification = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        setError(null);
+
+        const { error: updateError } = await supabase
+          .from("verifications")
+          .update({ admin_approved: true })
+          .eq("id", id);
+
+        if (updateError) throw updateError;
+
+        // Actualizar el conteo y la lista local
+        await fetchPendingCount();
+        setVerifications((prev) => prev.filter((v) => v.id !== id));
+
+        return true;
+      } catch (err) {
+        setError(err as Error);
+        console.error("Error approving verification:", err);
+        return false;
+      }
+    },
+    [fetchPendingCount],
+  );
+
+  /**
+   * Rechaza una verificación (admin only) - la elimina
+   */
+  const rejectVerification = useCallback(
+    async (id: string): Promise<boolean> => {
+      try {
+        setError(null);
+
+        const { error: deleteError } = await supabase
+          .from("verifications")
+          .delete()
+          .eq("id", id);
+
+        if (deleteError) throw deleteError;
+
+        // Actualizar el conteo y la lista local
+        await fetchPendingCount();
+        setVerifications((prev) => prev.filter((v) => v.id !== id));
+
+        return true;
+      } catch (err) {
+        setError(err as Error);
+        console.error("Error rejecting verification:", err);
+        return false;
+      }
+    },
+    [fetchPendingCount],
+  );
+
   // Efecto para fetch inicial
   useEffect(() => {
     if (autoFetch) {
@@ -358,13 +457,17 @@ export function VerificationsProvider({
     isLoading,
     error,
     isSubscribed,
+    pendingCount,
     fetchVerifications,
-    refetch: () => fetchVerifications(true),
+    refetch: (showPending?: boolean) => fetchVerifications(true, showPending),
+    fetchPendingCount,
     subscribe,
     unsubscribe,
     createVerification,
     updateVerification,
     deleteVerification,
+    approveVerification,
+    rejectVerification,
   };
 
   return (

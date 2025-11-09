@@ -2,8 +2,10 @@ import { UserProfile } from "@/types/profiles";
 import { Session } from "@supabase/supabase-js";
 import { createContext, useContext } from "react";
 
+export type UserSession = Session & { user: { is_admin?: boolean } };
+
 export type AuthData = {
-  session?: Session | null;
+  session?: UserSession | null;
   profile?: UserProfile | null;
   isLoading: boolean;
   isLoggedIn: boolean;
@@ -16,4 +18,4 @@ export const AuthContext = createContext<AuthData>({
   isLoggedIn: false,
 });
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuth = () => useContext(AuthContext);

@@ -7,7 +7,7 @@ import { useColorScheme } from "nativewind";
 import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import "react-native-reanimated";
-import { useAuthContext } from "@/hooks/use-auth-context";
+import { useAuth } from "@/hooks/use-auth-context";
 import { useOnboarding } from "@/hooks/use-onboarding";
 
 import { StyleSheet, View, ActivityIndicator } from "react-native";
@@ -24,17 +24,7 @@ export {
 
 // Separate RootNavigator so we can access the AuthContext
 function RootNavigator() {
-  const { isLoggedIn } = useAuthContext();
-  const { isOnboardingComplete, isLoading } = useOnboarding();
-
-  // Show loading while checking onboarding status
-  if (isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  const { isLoggedIn } = useAuth();
 
   return (
     <Stack>

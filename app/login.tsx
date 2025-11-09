@@ -67,11 +67,9 @@ export default function AuthScreen() {
           );
           setIsSignUp(false);
         } else {
-          Alert.alert(
-            "Éxito",
-            "¡Cuenta creada! Por favor revisa tu correo para verificar tu cuenta.",
-            [{ text: "OK", onPress: () => setIsSignUp(false) }],
-          );
+          Alert.alert("Éxito", "¡Cuenta creada! Por favor inicia sesión.", [
+            { text: "OK", onPress: () => setIsSignUp(false) },
+          ]);
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -84,7 +82,8 @@ export default function AuthScreen() {
         // Navigation is handled by auth state change in AuthProvider
       }
     } catch (error: any) {
-      Alert.alert("Error", error.message || "Error de autenticación");
+      console.log(error.message);
+      Alert.alert("Error", "Error de autenticación");
     } finally {
       setIsLoading(false);
     }
@@ -180,6 +179,17 @@ export default function AuthScreen() {
                 secureTextEntry={!showPassword}
                 editable={!isLoading}
               />
+              <Pressable
+                onPress={() => setShowPassword(!showPassword)}
+                style={{ position: "absolute", bottom: 16, right: 15 }}
+                disabled={isLoading}
+              >
+                <Icon
+                  as={showPassword ? EyeOff : Eye}
+                  size={25}
+                  className="text-primary"
+                />
+              </Pressable>
             </View>
           </View>
 

@@ -12,7 +12,7 @@ export function Message({ from, children, className }: MessageProps) {
   const isUser = from === "user";
   const alignment = isUser ? "items-end" : "items-start";
   return (
-    <View className={cn("mb-4 px-4", alignment, className)}>{children}</View>
+    <View className={cn("mb-4 px-2", alignment, className)}>{children}</View>
   );
 }
 

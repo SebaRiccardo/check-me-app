@@ -1,12 +1,49 @@
-import { AuthContext } from "@/hooks/use-auth-context";
+import { AuthContext, UserSession } from "@/hooks/use-auth-context";
 import { supabase } from "@/lib/supabase/supabase";
 import type { Session } from "@supabase/supabase-js";
 import { PropsWithChildren, useEffect, useState } from "react";
 import { useAsyncStorageDevTools } from "@dev-plugins/async-storage";
+import { AppState, Platform } from "react-native";
+import { jwtDecode } from "jwt-decode";
+
+if (Platform.OS !== "web") {
+  AppState.addEventListener("change", (state) => {
+    if (state === "active") {
+      supabase.auth.startAutoRefresh();
+    } else {
+      supabase.auth.stopAutoRefresh();
+    }
+  });
+}
+
+const extractAdminClaim = (session: Session | null): boolean => {
+  if (!session) return false;
+
+  try {
+    const jwt = jwtDecode(session.access_token) as any;
+    return jwt.app_metadata?.admin || false;
+  } catch (error) {
+    console.error("Error decoding JWT:", error);
+    return false;
+  }
+};
+
+const getSessionWithAdminClaim = (session: Session | null) => {
+  if (!session) return null;
+
+  const is_admin = extractAdminClaim(session);
+  return {
+    ...session,
+    user: {
+      ...session.user,
+      is_admin,
+    },
+  };
+};
 
 export default function AuthProvider({ children }: PropsWithChildren) {
   useAsyncStorageDevTools();
-  const [session, setSession] = useState<Session | undefined | null>();
+  const [session, setSession] = useState<UserSession | undefined | null>();
   const [profile, setProfile] = useState<any>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -23,8 +60,10 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       if (error) {
         console.error("Error fetching session:", error);
       }
-
-      setSession(session);
+      if (session) {
+        const sessionWithAdmin = getSessionWithAdminClaim(session);
+        setSession(sessionWithAdmin);
+      }
       setIsLoading(false);
     };
 
@@ -34,7 +73,10 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", { event: _event });
-      setSession(session);
+      if (session) {
+        const sessionWithAdmin = getSessionWithAdminClaim(session);
+        setSession(sessionWithAdmin);
+      }
     });
 
     // Cleanup subscription on unmount

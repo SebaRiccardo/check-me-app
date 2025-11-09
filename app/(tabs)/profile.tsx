@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuthContext } from "@/hooks/use-auth-context";
+import { useAuth } from "@/hooks/use-auth-context";
 import { useOnboarding } from "@/hooks/use-onboarding";
 import { supabase } from "@/lib/supabase/supabase";
 import { router } from "expo-router";
@@ -22,6 +22,7 @@ import {
 } from "lucide-react-native";
 import { Alert, ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Badge } from "@/components/ui/badge";
 
 function InfoRow({
   icon,
@@ -66,8 +67,10 @@ function SectionHeader({ title }: { title: string }) {
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
-  const { session, profile } = useAuthContext();
+  const { session, profile } = useAuth();
   const { resetOnboarding } = useOnboarding();
+
+  console.log(session?.user.is_admin);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -167,20 +170,26 @@ export default function ProfileScreen() {
       {/* Header */}
       <View className="items-center px-6">
         {/* Avatar */}
-        <View className="mb-4">
+        <View className="mb-2">
           <Avatar className="size-24" alt={profile?.full_name!}>
             <AvatarImage source={{ uri: avatarUrl }} />
             <AvatarFallback>
-              <Text>{getInitials(profile?.full_name!)}</Text>
+              <Text className="text-2xl text-bold">
+                {getInitials(profile?.full_name!)}
+              </Text>
             </AvatarFallback>
           </Avatar>
         </View>
-
+        {session?.user.is_admin && (
+          <Badge>
+            <Text>Admin</Text>
+          </Badge>
+        )}
         {/* User Info */}
         <Text className="text-center text-2xl font-bold text-foreground">
           {displayName}
         </Text>
-        <Text className="text-center text-xl text-gray-400">@{username}</Text>
+        <Text className="text-center text-lg text-gray-400">@{username}</Text>
       </View>
 
       {/* Auth Information */}

@@ -11,7 +11,12 @@ import { Database } from "@/lib/supabase/database.types";
 import { webSearch } from "@/lib/exa/search-tool";
 import { z } from "zod";
 
-const MODEL_WHITELIST = ["gemini-2.0-flash", "gemini-2.5-flash"] as const;
+const MODEL_WHITELIST = [
+  "gemini-2.0-flash",
+  "gemini-2.5-flash",
+  "gemini-2.0-flash-lite",
+  "gemini-2.5-pro",
+] as const;
 const DEFAULT_MODEL = MODEL_WHITELIST[0];
 
 const requestSchema = z

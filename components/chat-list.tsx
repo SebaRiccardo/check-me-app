@@ -45,13 +45,14 @@ export function ChatList({
       <View className="border-b border-border bg-card px-4 py-3">
         <View className="flex-row items-center justify-between">
           <Text className="text-lg font-bold text-foreground">
-            Conversaciones
+            Chats
           </Text>
           <TouchableOpacity
             onPress={onNewChat}
-            className="rounded-lg bg-primary p-2"
+            className="rounded-lg flex-row gap-2 px-3 items-center bg-primary p-2"
           >
             <Icon as={Plus} size={20} className="text-primary-foreground" />
+            <Text className="text-white">Nuevo chat</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -105,8 +106,15 @@ export function ChatList({
                     {formatDate(item.updated_at)}
                   </Text>
                 </View>
+                <Text
+                  numberOfLines={1}
+                  className="mt-1 text-xs font-mono text-muted-foreground/60"
+                >
+                  ID: {item.id}
+                </Text>
               </View>
             </View>
+            {currentChatId !== item.id &&
             <TouchableOpacity
               onPress={(e) => {
                 e.stopPropagation();
@@ -115,7 +123,7 @@ export function ChatList({
               className="ml-2 rounded-lg bg-destructive/10 p-2"
             >
               <Icon as={Trash2} size={16} className="text-destructive" />
-            </TouchableOpacity>
+            </TouchableOpacity>}
           </TouchableOpacity>
         )}
         ListEmptyComponent={

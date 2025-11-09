@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { useState } from "react";
 import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -7,8 +7,11 @@ import { ArrowLeft, X } from "lucide-react-native";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-
-const ONBOARDING_COMPLETED_KEY = "@onboarding_completed";
+import {
+  ONBOARDING_COMPLETED_KEY,
+  useOnboarding,
+} from "@/hooks/use-onboarding";
+import { useAuth } from "@/hooks/use-auth-context";
 
 // Onboarding steps
 const onboardingSteps = [
@@ -61,8 +64,19 @@ export default function OnboardingScreen() {
   const isLastStep = currentStep === onboardingSteps.length - 1;
   const step = onboardingSteps[currentStep];
 
+  const { session } = useAuth();
+  const { isOnboardingComplete } = useOnboarding();
+
+  if (isOnboardingComplete || session) {
+    {
+      /*@ts-ignore */
+    }
+    return <Redirect href={session ? "(tabs)" : "/welcome"} />;
+  }
+
   const handleComplete = async () => {
     try {
+      console.log("Completing onboarding...");
       await AsyncStorage.setItem(ONBOARDING_COMPLETED_KEY, "true");
       router.replace("/welcome");
     } catch (error) {

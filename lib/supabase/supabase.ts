@@ -35,13 +35,3 @@ export const supabase = createClient<Database>(
     },
   },
 );
-
-if (Platform.OS !== "web") {
-  AppState.addEventListener("change", (state) => {
-    if (state === "active") {
-      supabase.auth.startAutoRefresh();
-    } else {
-      supabase.auth.stopAutoRefresh();
-    }
-  });
-}

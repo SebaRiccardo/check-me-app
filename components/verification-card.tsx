@@ -1,14 +1,31 @@
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 import type { VerificationWithProfile } from "@/hooks/use-verifications";
-import { ExternalLink } from "lucide-react-native";
-import { Image, View, Pressable, Linking, Alert } from "react-native";
+import { ExternalLink, Clock } from "lucide-react-native";
+import { Image, View, Pressable, Linking, Alert, Button } from "react-native";
+import { Badge } from "./ui/badge";
 
 type VerificationCardProps = {
   verification: VerificationWithProfile;
+  isAdmin?: boolean;
+  isPendingView?: boolean;
 };
 
-export function VerificationCard({ verification }: VerificationCardProps) {
+const getInitials = (name: string | null | undefined) => {
+  if (!name) return "U";
+  return name
+    .split(" ")
+    .map((word) => word[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+};
+
+export function VerificationCard({
+  verification,
+  isAdmin,
+  isPendingView,
+}: VerificationCardProps) {
   const formattedDate = new Date(verification.created_at).toLocaleDateString(
     "es-ES",
     {
@@ -16,16 +33,6 @@ export function VerificationCard({ verification }: VerificationCardProps) {
       month: "long",
     },
   );
-
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((word) => word[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
 
   const displayName =
     verification.profiles?.full_name ||
@@ -73,54 +80,65 @@ export function VerificationCard({ verification }: VerificationCardProps) {
     }
   };
 
-  const getBadgeTextColor = () => {
-    switch (verification.category.toLowerCase()) {
-      case "verdadero":
-        return "text-green-600";
-      case "falso":
-        return "text-red-600";
-      case "falta contexto":
-        return "text-yellow-600";
-      default:
-        return "text-blue-600";
-    }
-  };
+  // const getBadgeTextColor = () => {
+  //   switch (verification.category.toLowerCase()) {
+  //     case "verdadero":
+  //       return "text-green-600";
+  //     case "falso":
+  //       return "text-red-600";
+  //     case "falta contexto":
+  //       return "text-yellow-600";
+  //     default:
+  //       return "text-blue-600";
+  //   }
+  // };
 
   return (
     <View className="border-b border-gray-200 bg-white px-4 py-3">
-      {/* Header */}
       <View className="flex-row">
         <View className="flex-1">
-          <View className="mb-4 flex-row items-center">
-            <View className="mr-2 mt-1">
-              {avatarUrl ? (
-                <Image
-                  source={{ uri: avatarUrl }}
-                  style={{ width: 36, height: 36, borderRadius: 24 }}
-                />
-              ) : (
-                <View className="size-9 items-center justify-center rounded-full bg-gray-300">
-                  <Text className="text-base font-bold text-white">
-                    {getInitials(displayName)}
+          <View className="mb-4 flex-row items-start justify-between ">
+            <View className="flex-row items-start justify-between w-full">
+              <View className=" flex-row items-center">
+                <View className="mr-2 mt-1">
+                  {avatarUrl ? (
+                    <Image
+                      source={{ uri: avatarUrl }}
+                      style={{ width: 36, height: 36, borderRadius: 24 }}
+                    />
+                  ) : (
+                    <View className="size-9 items-center justify-center rounded-full bg-gray-300">
+                      <Text className="text-base font-bold text-white">
+                        {getInitials(displayName)}
+                      </Text>
+                    </View>
+                  )}
+                </View>
+
+                <View className="flex-col justify-center">
+                  <View className="flex-row gap-2 -mb-1">
+                    <Text
+                      className="text-base font-bold text-gray-900"
+                      numberOfLines={1}
+                    >
+                      {displayName}
+                    </Text>
+                    <Text className="text-gray-500 text-base">·</Text>
+                    <Text className="text-gray-500 text-base">
+                      {formattedDate}
+                    </Text>
+                  </View>
+                  <Text className="leading-4 text-sm text-gray-500">
+                    @{username}
                   </Text>
                 </View>
-              )}
-            </View>
-
-            <View className="flex-col justify-center">
-              <View className="flex-row gap-2 -mb-1">
-                <Text
-                  className="text-base font-bold text-gray-900"
-                  numberOfLines={1}
-                >
-                  {displayName}
-                </Text>
-                <Text className="text-gray-500 text-base">·</Text>
-                <Text className="text-gray-500 text-base">{formattedDate}</Text>
               </View>
-              <Text className="leading-4 text-sm text-gray-500">
-                @{username}
-              </Text>
+              {isPendingView && isAdmin && (
+                <Badge variant="destructive">
+                  <Icon as={Clock} size={16} className=" text-white" />
+                  <Text className="text-sm font-medium">Sin revisar</Text>
+                </Badge>
+              )}
             </View>
           </View>
 
@@ -139,7 +157,7 @@ export function VerificationCard({ verification }: VerificationCardProps) {
                   </Text>
                 </View>
               </View>
-              {/* Title */}
+
               <Pressable
                 className=""
                 onPress={handleTitlePress}
@@ -166,7 +184,7 @@ export function VerificationCard({ verification }: VerificationCardProps) {
           </View>
 
           {/* Image */}
-          {verification.image_url && (
+          {verification.image_url && !isPendingView && (
             <View className="mb-3 overflow-hidden rounded-2xl border border-gray-200">
               <Image
                 source={{ uri: verification.image_url }}

@@ -4,7 +4,7 @@ import { ControlledSelect } from "@/components/ui/controlled-select";
 import { ControlledTextArea } from "@/components/ui/controlled-textarea";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
-import { useAuthContext } from "@/hooks/use-auth-context";
+import { useAuth } from "@/hooks/use-auth-context";
 import {
   uploadVerificationImage,
   useCreateVerification,
@@ -51,7 +51,7 @@ export function CreateVerificationFormContent({
   onSuccess,
   useScrollView = false,
 }: CreateVerificationFormContentProps) {
-  const { session } = useAuthContext();
+  const { session } = useAuth();
   const { createVerification, isLoading } = useCreateVerification();
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [isUploadingImage, setIsUploadingImage] = useState(false);

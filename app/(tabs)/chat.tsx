@@ -21,7 +21,7 @@ import {
   Plus,
 } from "lucide-react-native";
 
-import { useAuthContext } from "@/hooks/use-auth-context";
+import { useAuth } from "@/hooks/use-auth-context";
 import { useChatPersistence } from "@/hooks/use-chat-persistence";
 import { generateAPIUrl } from "@/lib/utils";
 import { Icon } from "@/components/ui/icon";
@@ -63,17 +63,20 @@ import {
   type Option,
 } from "@/components/ui/select";
 import { Toggle, ToggleIcon } from "@/components/ui/toggle";
+import { Button } from "@/components/ui/button";
 
 const MODEL_OPTIONS: Option[] = [
   { value: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
   { value: "gemini-2.5-flash", label: "Gemini 2.5 Flash" },
+  { value: "gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite" },
+  { value: "gemini-2.5-pro", label: "Gemini 2.5 Pro" },
 ];
 
 const FALLBACK_MODEL: Option = MODEL_OPTIONS[0];
 
 export default function ChatScreen() {
   const insets = useSafeAreaInsets();
-  const { session } = useAuthContext();
+  const { session } = useAuth();
   const scrollViewRef = useRef<ScrollView>(null);
   const [selectedModel, setSelectedModel] = useState<Option>(FALLBACK_MODEL);
   const [webSearch, setWebSearch] = useState(true);
@@ -81,6 +84,7 @@ export default function ChatScreen() {
   const [input, setInput] = useState("");
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [showChatList, setShowChatList] = useState(false);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   // Get user ID from session
   const userId = session?.user?.id;
@@ -96,16 +100,27 @@ export default function ChatScreen() {
     refreshChats,
   } = useChatPersistence(userId);
 
-  // Create a new chat on mount if no chat exists
+  // Load the last chat on mount, or create a new one if no chats exist
   useEffect(() => {
-    if (isInitialized && userId && !currentChatId) {
-      createNewChat().then((chatId) => {
-        if (chatId) {
-          setCurrentChatId(chatId);
-        }
-      });
+    if (isInitialized && userId && !currentChatId && !hasInitialized) {
+      setHasInitialized(true);
+      
+      // If there are existing chats, load the most recent one
+      if (chats.length > 0) {
+        const lastChat = chats[0]; // Chats are ordered by updated_at DESC
+        console.log("Loading last chat with ID:", lastChat.id);
+        setCurrentChatId(lastChat.id);
+      } else {
+        // No chats exist, create a new one
+        createNewChat().then((chatId) => {
+          console.log("Created new chat with ID:", chatId);
+          if (chatId) {
+            setCurrentChatId(chatId);
+          }
+        });
+      }
     }
-  }, [isInitialized, userId, currentChatId]);
+  }, [isInitialized, userId, currentChatId, chats, hasInitialized, createNewChat]);
 
   if (!session) {
     return (
@@ -168,9 +183,7 @@ export default function ChatScreen() {
   useEffect(() => {
     if (currentChatId && isInitialized) {
       loadChatMessages(currentChatId).then((loadedMessages) => {
-        if (loadedMessages.length > 0) {
-          setMessages(loadedMessages);
-        }
+        setMessages(loadedMessages);
       });
     }
   }, [currentChatId, isInitialized]);
@@ -239,8 +252,6 @@ export default function ChatScreen() {
 
   const isStreaming = status === "streaming" || status === "submitted";
 
-  console.log(messages);
-
   return (
     <>
       <KeyboardAvoidingView
@@ -248,20 +259,20 @@ export default function ChatScreen() {
         behavior={"padding"}
       >
         <View
-          className="border-b border-border bg-card px-6 pb-4"
+          className="border-b border-border bg-card px-4 pb-4"
           style={{ paddingTop: insets.top + 16 }}
         >
           <View className="flex-row items-center justify-between">
             <View className="flex-row items-center">
-              <View className="mr-3 size-10 items-center justify-center rounded-md bg-primary">
+              <View className="mr-2 size-9 items-center justify-center rounded-md bg-primary">
                 <Icon as={Bot} size={22} className="text-white" />
               </View>
               <View>
-                <Text className="text-xl font-bold text-foreground">
-                  CheckMe IA
+                <Text className="text-lg font-bold text-foreground">
+                  Hola, me llamo Clarity 
                 </Text>
-                <Text className="text-sm text-muted-foreground">
-                  Verificador con IA y búsqueda confiable
+                <Text className="text-sm text-gray-500">
+                  Tu asistente de verificación
                 </Text>
               </View>
             </View>
@@ -289,8 +300,8 @@ export default function ChatScreen() {
             contentContainerStyle={{ paddingTop: 24 }}
           >
             {messages.length === 0 ? (
-              <View className="flex-1 items-center justify-center px-6 py-20">
-                <View className="mb-4 size-20 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-blue-500">
+              <View className="flex-1 items-center justify-center px-4 py-20">
+                <View className="mb-4 size-20 items-center justify-center rounded-full bg-blue-200 ">
                   <Icon as={Sparkles} size={40} className="text-white" />
                 </View>
                 <Text className="mb-2 text-center text-xl font-bold text-foreground">
@@ -324,7 +335,7 @@ export default function ChatScreen() {
 
                 return (
                   <Message key={message.id} from={message.role}>
-                    <MessageContent className="flex flex-col gap-2 px-4">
+                    <MessageContent className="flex flex-col gap-2">
                       {textParts.map((part: any, index: number) => (
                         <View
                           key={`${message.id}-text-${index}`}
@@ -400,8 +411,7 @@ export default function ChatScreen() {
                 );
               })
             )}
-
-            {isStreaming ? <Loader className="px-6" /> : null}
+            {isStreaming ? <Loader className="px-2" /> : null}
           </ConversationContent>
 
           {messages.length > 0 ? (
@@ -417,51 +427,59 @@ export default function ChatScreen() {
         </Conversation>
 
         <PromptInput className="bg-transparent rounded-none bordert-0 pb-0">
-          <PromptInputTools className="mb-2 ">
-            <View className="flex-row items-center gap-2">
-              <Toggle
-                pressed={webSearch}
-                onPressedChange={setWebSearch}
-                variant="outline"
-                size="sm"
+          {session.user.is_admin && (
+            <PromptInputTools className="mb-2">
+              <ScrollView
+                className="gap-4"
+                horizontal
+                showsHorizontalScrollIndicator={false}
               >
-                <ToggleIcon as={Globe} />
-                <Text className="text-sm font-medium">
-                  {webSearch ? "Búsqueda web" : "Sin búsqueda"}
-                </Text>
-              </Toggle>
-              <Toggle
-                pressed={showTools}
-                onPressedChange={setShowTools}
-                variant="outline"
-                size="sm"
-              >
-                <ToggleIcon as={Wrench} />
-                <Text className="text-sm font-medium">
-                  {showTools ? "Herramientas" : "Sin herramientas"}
-                </Text>
-              </Toggle>
-              <Select
-                value={selectedModel}
-                onValueChange={(option) =>
-                  setSelectedModel(option ?? FALLBACK_MODEL)
-                }
-              >
-                <SelectTrigger className="h-9 border-muted bg-muted/20">
-                  <SelectValue placeholder="Selecciona un modelo" />
-                </SelectTrigger>
-                <SelectContent align="center">
-                  {MODEL_OPTIONS.map((option) => (
-                    <SelectItem
-                      key={option?.value}
-                      value={option?.value ?? ""}
-                      label={option?.label ?? ""}
-                    />
-                  ))}
-                </SelectContent>
-              </Select>
-            </View>
-          </PromptInputTools>
+                <Toggle
+                  pressed={webSearch}
+                  onPressedChange={setWebSearch}
+                  variant="outline"
+                  size="sm"
+                
+                >
+                  <ToggleIcon as={Globe} />
+                  <Text className="text-sm font-medium">
+                    {webSearch ? "Búsqueda web" : "Sin búsqueda"}
+                  </Text>
+                </Toggle>
+
+                <Select
+                  value={selectedModel}
+                  onValueChange={(option) =>
+                    setSelectedModel(option ?? FALLBACK_MODEL)
+                  }
+                >
+                  <SelectTrigger className="mx-2 h-9 border-muted bg-muted/20">
+                    <SelectValue placeholder="Selecciona un modelo" />
+                  </SelectTrigger>
+                  <SelectContent align="center">
+                    {MODEL_OPTIONS.map((option) => (
+                      <SelectItem
+                        key={option?.value}
+                        value={option?.value ?? ""}
+                        label={option?.label ?? ""}
+                      />
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Toggle
+                  pressed={showTools}
+                  onPressedChange={setShowTools}
+                  variant="outline"
+                  size="sm"
+                >
+                  <ToggleIcon as={Wrench} />
+                  <Text className="text-sm font-medium">
+                    {showTools ? "Ver búsqueda web" : "Ocultar búsqueda web"}
+                  </Text>
+                </Toggle>
+              </ScrollView>
+            </PromptInputTools>
+          )}
           <PromptInputBody className="flex-row items-end gap-2">
             <PromptInputTextarea
               value={input}
@@ -485,12 +503,18 @@ export default function ChatScreen() {
 
       {/* Chat List Modal */}
       <Modal
+        hardwareAccelerated
+        //navigationBarTranslucent
         visible={showChatList}
         animationType="slide"
         presentationStyle="pageSheet"
         onRequestClose={() => setShowChatList(false)}
+        allowSwipeDismissal={true}
       >
-        <View className="flex-1" style={{ paddingTop: insets.top }}>
+        <View
+          className="flex-1"
+          style={{ paddingTop: insets.top, paddingBottom: insets.bottom }}
+        >
           <ChatList
             chats={chats}
             currentChatId={currentChatId}
@@ -498,6 +522,11 @@ export default function ChatScreen() {
             onNewChat={handleNewChat}
             onDeleteChat={handleDeleteChat}
           />
+          <View className="px-6">
+            <Button onPress={() => setShowChatList(false)}>
+              <Text>Cerrar</Text>
+            </Button>
+          </View>
         </View>
       </Modal>
     </>
