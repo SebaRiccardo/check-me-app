@@ -13,6 +13,7 @@
     "doctor": "npx expo-doctor@latest",
     "build:dev:android": "eas build --profile development --platform android",
     "build:preview:android": "eas build --profile preview --platform android",
+    
     "build:prod:android": "eas build --profile production --platform android",
     "export:routes": "npx expo export --platform web --no-ssg",
     "deploy:routes": "eas deploy",
@@ -48,6 +49,7 @@
     "ai": "^5.0.89",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "eas-cli": "^16.26.0",
     "exa-js": "^2.0.0",
     "expo": "^54.0.0",
     "expo-dev-client": "~6.0.17",
