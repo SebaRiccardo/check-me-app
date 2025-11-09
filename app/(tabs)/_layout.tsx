@@ -64,21 +64,21 @@ export default function TabLayout() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: -35,
+                marginTop: -10,
               }}
             >
               <View
                 style={{
-                  width: 56,
-                  height: 56,
+                  width: 48,
+                  height: 48,
                   borderRadius: 28,
                   backgroundColor:
                     colorScheme === "dark" ? "#1DA1F2" : "#1DA1F2",
                   justifyContent: "center",
                   alignItems: "center",
                   shadowColor: "#000",
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
+                  shadowOffset: { width: 0, height: 3 },
+                  shadowOpacity: 0.1,
                   shadowRadius: 4,
                   elevation: 8,
                 }}

@@ -433,7 +433,7 @@ export default function ChatScreen() {
           ) : null}
         </Conversation>
 
-        <PromptInput className="bg-transparent rounded-none bordert-0 pb-0">
+        <PromptInput className="bg-transparent rounded-none bordert-0 pb-2">
           {session.user.is_admin && (
             <PromptInputTools className="mb-2">
               <ScrollView

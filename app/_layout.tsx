@@ -44,6 +44,7 @@ function RootNavigator() {
           }}
         />
       </Stack.Protected>
+      
       <Stack.Protected guard={!isLoggedIn}>
         <Stack.Screen name="welcome" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />

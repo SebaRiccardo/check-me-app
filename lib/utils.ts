@@ -8,8 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const generateAPIUrl = (relativePath: string) => {
   const path = relativePath.startsWith("/") ? relativePath : `/${relativePath}`;
-  console.warn(path);
-
+ 
   // if (process.env.NODE_ENV === "development") {
   //   // En SDK 49+, usa hostUri en lugar de experienceUrl
   //   const hostUri = Constants.expoConfig?.hostUri;
@@ -32,7 +31,7 @@ export const generateAPIUrl = (relativePath: string) => {
   }
 
   const finalPath = process.env.EXPO_PUBLIC_API_BASE_URL.concat(path);
-  console.log("URL de producción generada:", finalPath);
+  //console.log("URL de producción generada:", finalPath);
   return finalPath;
 };
 

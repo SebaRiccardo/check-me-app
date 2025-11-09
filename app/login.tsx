@@ -13,6 +13,7 @@ import {
   ScrollView,
   View,
   Pressable,
+  Image,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -24,22 +25,26 @@ export default function AuthScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const router = useRouter();
+  const [error, setError] = useState<string | null>(null);
+
   const insets = useSafeAreaInsets();
 
   const handleAuth = async () => {
+    // Clear previous error
+    setError(null);
+
     if (!email || !password) {
-      Alert.alert("Error", "Por favor ingresa tu correo y contraseña");
+      setError("Por favor ingresa tu correo y contraseña");
       return;
     }
 
     if (isSignUp && !firstName.trim()) {
-      Alert.alert("Error", "Por favor ingresa tu nombre");
+      setError("Por favor ingresa tu nombre");
       return;
     }
 
     if (isSignUp && !username.trim()) {
-      Alert.alert("Error", "Por favor ingresa un nombre de usuario");
+      setError("Por favor ingresa un nombre de usuario");
       return;
     }
 
@@ -61,15 +66,12 @@ export default function AuthScreen() {
         if (error) throw error;
 
         if (data?.user?.identities?.length === 0) {
-          Alert.alert(
-            "Información",
-            "Este correo ya está registrado. Por favor inicia sesión.",
-          );
+          setError("Este correo ya está registrado. Por favor inicia sesión.");
           setIsSignUp(false);
         } else {
-          Alert.alert("Éxito", "¡Cuenta creada! Por favor inicia sesión.", [
-            { text: "OK", onPress: () => setIsSignUp(false) },
-          ]);
+          // Alert.alert("Éxito", "¡Cuenta creada! Por favor inicia sesión.", [
+          //   { text: "OK", onPress: () => setIsSignUp(false) },
+          // ]);
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
@@ -83,7 +85,7 @@ export default function AuthScreen() {
       }
     } catch (error: any) {
       console.log(error.message);
-      Alert.alert("Error", "Error de autenticación");
+      setError(error.message || "Error de autenticación");
     } finally {
       setIsLoading(false);
     }
@@ -92,11 +94,12 @@ export default function AuthScreen() {
   // Clean password when switching between sign in/up modes
   useEffect(() => {
     setPassword("");
+    setError(null); // Clear error when switching modes
   }, [isSignUp]);
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "padding"}
+      behavior={"padding"}
       style={{ flex: 1 }}
     >
       <ScrollView
@@ -108,16 +111,24 @@ export default function AuthScreen() {
       >
         <View className="flex-1 px-4">
           {/* Header */}
+          <Image source={require('@/assets/images/icon.png')} className="w-24 h-24 my-5 self-center mb-6" />
           <View className="mb-12">
-            <Text className="mb-2 text-4xl font-bold text-foreground">
+            <Text className="mb-2 text-4xl text-center font-bold text-foreground">
               {isSignUp ? "¡Comencemos!" : "¡Bienvenido!"}
             </Text>
-            <Text className="text-base text-muted-foreground">
+            <Text className="text-base text-center text-gray-400">
               {isSignUp
                 ? "Crea tu cuenta para continuar"
                 : "Inicia sesión en tu cuenta."}
             </Text>
           </View>
+
+          {/* Error Alert */}
+          {error && (
+            <View className="mb-6 rounded-lg border border-red-500 bg-red-500/10 p-4">
+              <Text className="text-sm font-medium text-red-500">{error}</Text>
+            </View>
+          )}
 
           {/* First Name Input (only for sign up) */}
           {isSignUp && (
@@ -130,6 +141,7 @@ export default function AuthScreen() {
                 value={firstName}
                 onChangeText={setFirstName}
                 autoCapitalize="words"
+                 className="h-14"
                 editable={!isLoading}
               />
             </View>
@@ -146,6 +158,7 @@ export default function AuthScreen() {
                 value={username}
                 onChangeText={setUsername}
                 autoCapitalize="none"
+                className="h-14"
                 editable={!isLoading}
               />
             </View>
@@ -162,6 +175,7 @@ export default function AuthScreen() {
               onChangeText={setEmail}
               autoCapitalize="none"
               keyboardType="email-address"
+              className="h-14"
               editable={!isLoading}
             />
           </View>
@@ -177,19 +191,29 @@ export default function AuthScreen() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
+                className="h-14"
                 editable={!isLoading}
               />
-              <Pressable
+                <Pressable
                 onPress={() => setShowPassword(!showPassword)}
-                style={{ position: "absolute", bottom: 16, right: 15 }}
+                style={{ 
+                  position: "absolute", 
+                  bottom: 4, 
+                  right: 4,
+                  padding: 12,
+                  minHeight: 44,
+                  minWidth: 44,
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
                 disabled={isLoading}
-              >
+                >
                 <Icon
                   as={showPassword ? EyeOff : Eye}
                   size={25}
                   className="text-primary"
                 />
-              </Pressable>
+                </Pressable>
             </View>
           </View>
 
@@ -197,7 +221,7 @@ export default function AuthScreen() {
           <Button
             onPress={handleAuth}
             disabled={isLoading}
-            className="mb-6 h-16"
+            className="mb-6 h-14"
             size="lg"
           >
             <Text className="text-base font-bold text-primary-foreground">
@@ -243,10 +267,10 @@ export default function AuthScreen() {
               variant="ghost"
               onPress={() => setIsSignUp(!isSignUp)}
               disabled={isLoading}
-              className="h-auto p-0"
+              className=" h-14 rounded-none px-2"
             >
               <Text className="text-base font-bold text-primary">
-                {isSignUp ? "Inicia sesión" : "Regístrate"}
+                {isSignUp ? "Inicia sesión" : "Regístrate aqui"}
               </Text>
             </Button>
           </View>

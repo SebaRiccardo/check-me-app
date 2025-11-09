@@ -67,10 +67,9 @@ function SectionHeader({ title }: { title: string }) {
 
 export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
+
   const { session, profile } = useAuth();
   const { resetOnboarding } = useOnboarding();
-
-  console.log(session?.user.is_admin);
 
   const handleSignOut = async () => {
     Alert.alert(
@@ -83,6 +82,7 @@ export default function ProfileScreen() {
           style: "destructive",
           onPress: async () => {
             const { error } = await supabase.auth.signOut();
+
             if (error) {
               Alert.alert("Error", error.message);
             }
@@ -104,7 +104,7 @@ export default function ProfileScreen() {
             const success = await resetOnboarding();
             if (success) {
               // Sign out to trigger onboarding flow
-              await supabase.auth.signOut();
+             router.navigate("/onboarding");
             } else {
               Alert.alert("Error", "No se pudo reiniciar el tutorial");
             }
@@ -265,19 +265,19 @@ export default function ProfileScreen() {
       </Card>
 
       {/* Actions */}
-      <View className="px-4 gap-3">
-        <Button variant="outline" onPress={handleRestartOnboarding}>
+      <View className="px-4 gap-3 mt-auto flex-1">
+        <Button variant="outline" className="h-14" onPress={handleRestartOnboarding}>
           <Icon as={HelpCircle} size={20} className="mr-2 text-primary" />
-          <Text className="font-semibold text-primary">Ver Tutorial</Text>
+          <Text className="font-semibold text-primary">Ver Intro</Text>
         </Button>
 
         <Button
-          variant="outline"
+          variant="destructive"
           onPress={handleSignOut}
-          className="border-destructive"
+          className="h-14"
         >
-          <Icon as={LogOut} size={20} className="mr-2 text-destructive" />
-          <Text className="font-semibold text-destructive">Cerrar Sesión</Text>
+          <Icon as={LogOut} size={20} className="mr-2 text-white" />
+          <Text className="font-semibold text-white">Cerrar Sesión</Text>
         </Button>
       </View>
     </ScrollView>

@@ -73,10 +73,9 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       console.log("Auth state changed:", { event: _event });
-      if (session) {
-        const sessionWithAdmin = getSessionWithAdminClaim(session);
-        setSession(sessionWithAdmin);
-      }
+    
+      const sessionWithAdmin = getSessionWithAdminClaim(session);
+      setSession(sessionWithAdmin);
     });
 
     // Cleanup subscription on unmount
