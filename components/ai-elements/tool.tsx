@@ -23,7 +23,10 @@ export type ToolProps = ComponentProps<typeof Collapsible>;
 
 export const Tool = ({ className, ...props }: ToolProps) => (
   <Collapsible
-    className={cn("mb-4 w-full overflow-hidden rounded-md border border-border", className)}
+    className={cn(
+      "mb-4 w-full overflow-hidden rounded-md border border-border",
+      className,
+    )}
     {...props}
   />
 );
@@ -47,10 +50,7 @@ const getStatusInfo = (status: ToolUIPart["state"]) => {
   };
 
   const iconConfigs: Partial<
-    Record<
-      ToolUIPart["state"] | string,
-      { Icon: typeof Circle; color: string }
-    >
+    Record<ToolUIPart["state"] | string, { Icon: typeof Circle; color: string }>
   > = {
     "input-streaming": { Icon: Circle, color: "text-muted-foreground" },
     "input-available": { Icon: Clock, color: "text-blue-600" },
@@ -90,7 +90,7 @@ export const ToolHeader = ({
         <Text className="flex-1 text-sm font-medium">
           {title ?? type.split("-").slice(1).join("-")}
         </Text>
-        <View className="flex-row items-center gap-1.5 rounded-full bg-secondary px-2 py-1">
+        <View className="flex-row items-center gap-1.5 rounded-full bg-muted/20 px-2 py-1">
           <Icon as={statusInfo.Icon} size={14} className={statusInfo.color} />
           <Text className="text-xs">{statusInfo.label}</Text>
         </View>
@@ -103,7 +103,10 @@ export const ToolHeader = ({
 export type ToolContentProps = ComponentProps<typeof CollapsibleContent>;
 
 export const ToolContent = ({ className, ...props }: ToolContentProps) => (
-  <CollapsibleContent className={cn("border-t border-border", className)} {...props} />
+  <CollapsibleContent
+    className={cn("border-t border-border", className)}
+    {...props}
+  />
 );
 
 export type ToolInputProps = Omit<ComponentProps<typeof View>, "children"> & {
@@ -143,7 +146,11 @@ export const ToolOutput = ({
 
   let OutputComponent: ReactNode = null;
 
-  if (typeof output === "object" && !isValidElement(output) && output !== null) {
+  if (
+    typeof output === "object" &&
+    !isValidElement(output) &&
+    output !== null
+  ) {
     OutputComponent = (
       <ScrollView horizontal className="p-3">
         <Text className="font-mono text-xs text-foreground">
@@ -187,4 +194,3 @@ export const ToolOutput = ({
     </View>
   );
 };
-

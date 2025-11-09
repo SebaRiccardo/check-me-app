@@ -14,16 +14,7 @@ interface PromptInputProps {
 }
 
 export function PromptInput({ children, className }: PromptInputProps) {
-  return (
-    <View
-      className={cn(
-        "w-full p-4",
-        className,
-      )}
-    >
-      {children}
-    </View>
-  );
+  return <View className={cn("w-full p-4", className)}>{children}</View>;
 }
 
 interface PromptInputSectionProps {

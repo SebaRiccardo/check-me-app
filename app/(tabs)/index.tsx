@@ -14,7 +14,7 @@ import { useCallback, useRef, useState } from "react";
 import { ActivityIndicator, RefreshControl, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 function EmptyState() {
   return (
     <View className="flex-1 items-center justify-center p-8">
@@ -56,7 +56,6 @@ export default function CommunityScreen() {
     setIsRefreshing(false);
   };
 
-
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -72,7 +71,6 @@ export default function CommunityScreen() {
       </View>
     );
   }
-
 
   return (
     <View className="flex-1 bg-background">

@@ -8,7 +8,7 @@ export const webSearch = tool({
     query: z.string().min(1).max(100).describe("The search query"),
   }),
   execute: async ({ query }) => {
-    const { results,costDollars } = await exa.search(query, {
+    const { results, costDollars } = await exa.search(query, {
       numResults: 5,
       category: "news",
       type: "fast",

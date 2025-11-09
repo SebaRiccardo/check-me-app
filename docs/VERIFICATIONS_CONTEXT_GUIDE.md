@@ -18,6 +18,7 @@ El provider ya está configurado en `app/_layout.tsx`:
 ```
 
 **Props del Provider:**
+
 - `autoSubscribe` (default: `true`): Suscribe automáticamente a cambios en tiempo real
 - `autoFetch` (default: `true`): Hace fetch inicial de verificaciones al montar
 
@@ -31,23 +32,23 @@ import { useVerificationsContext } from "@/providers/verifications-provider";
 function MyComponent() {
   const {
     // Estado
-    verifications,      // VerificationWithProfile[]
-    isLoading,         // boolean
-    error,             // Error | null
-    isSubscribed,      // boolean
-    
+    verifications, // VerificationWithProfile[]
+    isLoading, // boolean
+    error, // Error | null
+    isSubscribed, // boolean
+
     // Acciones
     fetchVerifications, // (isRefreshing?: boolean) => Promise<void>
-    refetch,           // () => Promise<void>
-    
+    refetch, // () => Promise<void>
+
     // Realtime
-    subscribe,         // () => RealtimeChannel
-    unsubscribe,       // () => void
-    
+    subscribe, // () => RealtimeChannel
+    unsubscribe, // () => void
+
     // CRUD
-    createVerification,  // (data) => Promise<VerificationWithProfile | null>
-    updateVerification,  // (id, updates) => Promise<VerificationWithProfile | null>
-    deleteVerification,  // (id) => Promise<boolean>
+    createVerification, // (data) => Promise<VerificationWithProfile | null>
+    updateVerification, // (id, updates) => Promise<VerificationWithProfile | null>
+    deleteVerification, // (id) => Promise<boolean>
   } = useVerificationsContext();
 
   return (
@@ -67,7 +68,8 @@ function MyComponent() {
 
 ```tsx
 function VerificationsList() {
-  const { verifications, isLoading, error, refetch } = useVerificationsContext();
+  const { verifications, isLoading, error, refetch } =
+    useVerificationsContext();
 
   if (isLoading) {
     return <ActivityIndicator />;
@@ -103,51 +105,53 @@ function CreateVerificationForm() {
 
   const handleSubmit = async (data: VerificationInsert) => {
     setIsSubmitting(true);
-    
+
     const result = await createVerification(data);
-    
+
     if (result) {
       console.log("Verificación creada:", result.id);
       // La verificación aparecerá automáticamente en la lista
       // gracias a la suscripción en tiempo real
     }
-    
+
     setIsSubmitting(false);
   };
 
-  return (
-    <Form onSubmit={handleSubmit} disabled={isSubmitting} />
-  );
+  return <Form onSubmit={handleSubmit} disabled={isSubmitting} />;
 }
 ```
 
 ### 3. Actualizar Verificación
 
 ```tsx
-function VerificationCard({ verification }: { verification: VerificationWithProfile }) {
+function VerificationCard({
+  verification,
+}: {
+  verification: VerificationWithProfile;
+}) {
   const { updateVerification } = useVerificationsContext();
   const [isUpdating, setIsUpdating] = useState(false);
 
   const handleStatusChange = async (newStatus: string) => {
     setIsUpdating(true);
-    
+
     const result = await updateVerification(verification.id, {
       status: newStatus,
     });
-    
+
     if (result) {
       console.log("Verificación actualizada");
       // El estado se actualiza automáticamente
     }
-    
+
     setIsUpdating(false);
   };
 
   return (
     <Card>
       <Text>{verification.title}</Text>
-      <Button 
-        onPress={() => handleStatusChange("verified")} 
+      <Button
+        onPress={() => handleStatusChange("verified")}
         disabled={isUpdating}
       >
         Marcar como verificado
@@ -169,23 +173,19 @@ function DeleteButton({ verificationId }: { verificationId: string }) {
     if (!confirmed) return;
 
     setIsDeleting(true);
-    
+
     const success = await deleteVerification(verificationId);
-    
+
     if (success) {
       console.log("Verificación eliminada");
       // Se elimina automáticamente de la lista
     }
-    
+
     setIsDeleting(false);
   };
 
   return (
-    <Button 
-      onPress={handleDelete} 
-      disabled={isDeleting}
-      variant="destructive"
-    >
+    <Button onPress={handleDelete} disabled={isDeleting} variant="destructive">
       Eliminar
     </Button>
   );
@@ -204,7 +204,7 @@ function ManualSubscriptionComponent() {
     // Solo suscribirse cuando el componente esté visible
     if (isVisible && !isSubscribed) {
       const channel = subscribe();
-      
+
       return () => {
         // Limpieza manual
         supabase.removeChannel(channel);
@@ -232,7 +232,10 @@ Los siguientes hooks aún funcionan pero están marcados como deprecados. Se rec
 
 ```tsx
 // ❌ Deprecado
-import { useVerifications, useCreateVerification } from "@/hooks/use-verifications";
+import {
+  useVerifications,
+  useCreateVerification,
+} from "@/hooks/use-verifications";
 
 const { verifications, isLoading } = useVerifications();
 const { createVerification } = useCreateVerification();
@@ -240,25 +243,30 @@ const { createVerification } = useCreateVerification();
 // ✅ Recomendado
 import { useVerificationsContext } from "@/providers/verifications-provider";
 
-const { verifications, isLoading, createVerification } = useVerificationsContext();
+const { verifications, isLoading, createVerification } =
+  useVerificationsContext();
 ```
 
 ## Características Principales
 
 ### ✅ Estado Único y Compartido
+
 - Todos los componentes comparten el mismo estado de verificaciones
 - No hay duplicación de datos ni sincronización manual necesaria
 
 ### ✅ Realtime Automático
+
 - Las operaciones CRUD se sincronizan automáticamente en tiempo real
 - Los cambios de otros usuarios aparecen instantáneamente
 - Actualización optimista del estado local
 
 ### ✅ Gestión de Errores
+
 - Errores capturados y expuestos en el contexto
 - Reintentos fáciles con `refetch()`
 
 ### ✅ Performance
+
 - Actualización granular del estado (no refetch completo)
 - Fetch inicial configurable
 - Suscripción opcional para componentes que no la necesiten
@@ -278,12 +286,8 @@ const { verifications, isLoading, createVerification } = useVerificationsContext
 
 ```tsx
 function CustomComponent() {
-  const { 
-    fetchVerifications, 
-    subscribe, 
-    unsubscribe,
-    isSubscribed 
-  } = useVerificationsContext();
+  const { fetchVerifications, subscribe, unsubscribe, isSubscribed } =
+    useVerificationsContext();
 
   useEffect(() => {
     // Fetch manual cuando el usuario lo requiera
@@ -322,15 +326,20 @@ interface VerificationsContextValue {
   isLoading: boolean;
   error: Error | null;
   isSubscribed: boolean;
-  
+
   fetchVerifications: (isRefreshing?: boolean) => Promise<void>;
   refetch: () => Promise<void>;
-  
+
   subscribe: () => RealtimeChannel;
   unsubscribe: () => void;
-  
-  createVerification: (verification: VerificationInsert) => Promise<VerificationWithProfile | null>;
-  updateVerification: (id: string, updates: VerificationUpdate) => Promise<VerificationWithProfile | null>;
+
+  createVerification: (
+    verification: VerificationInsert,
+  ) => Promise<VerificationWithProfile | null>;
+  updateVerification: (
+    id: string,
+    updates: VerificationUpdate,
+  ) => Promise<VerificationWithProfile | null>;
   deleteVerification: (id: string) => Promise<boolean>;
 }
 ```
@@ -338,18 +347,20 @@ interface VerificationsContextValue {
 ## Migración desde Hooks Antiguos
 
 ### Antes
+
 ```tsx
 function MyComponent() {
   const { verifications, isLoading } = useVerifications();
   const { createVerification } = useCreateVerification();
   const { updateVerification } = useUpdateVerification();
   const { deleteVerification } = useDeleteVerification();
-  
+
   // Cada hook tiene su propio estado de loading y error
 }
 ```
 
 ### Después
+
 ```tsx
 function MyComponent() {
   const {
@@ -360,7 +371,7 @@ function MyComponent() {
     updateVerification,
     deleteVerification,
   } = useVerificationsContext();
-  
+
   // Todo centralizado en un solo hook
 }
 ```

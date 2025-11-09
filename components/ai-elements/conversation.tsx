@@ -60,9 +60,7 @@ export function ConversationScrollButton({
         className,
       )}
     >
-     
-        {children }
-    
+      {children}
     </TouchableOpacity>
   );
 }

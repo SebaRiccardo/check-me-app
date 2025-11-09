@@ -1,5 +1,11 @@
 import { google } from "@ai-sdk/google";
-import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
+import {
+  streamText,
+  UIMessage,
+  convertToModelMessages,
+  stepCountIs,
+  createIdGenerator,
+} from "ai";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/lib/supabase/database.types";
 import { webSearch } from "@/lib/exa/search-tool";
@@ -8,13 +14,20 @@ import { z } from "zod";
 const MODEL_WHITELIST = ["gemini-2.0-flash", "gemini-2.5-flash"] as const;
 const DEFAULT_MODEL = MODEL_WHITELIST[0];
 
-const requestSchema = z.object({
-  messages: z.array(z.unknown()).min(1, {
-    message: "Debes proporcionar al menos un mensaje",
-  }),
-  model: z.string().optional(),
-  webSearch: z.boolean().optional(),
-});
+const requestSchema = z
+  .object({
+    message: z.unknown().optional(),
+    messages: z.array(z.unknown()).optional(),
+    chatId: z.string().optional(),
+    model: z.string().optional(),
+    webSearch: z.boolean().optional(),
+  })
+  .refine(
+    (data) => data.message || (data.messages && data.messages.length > 0),
+    {
+      message: "Debes proporcionar al menos un mensaje",
+    },
+  );
 
 const isAllowedModel = (
   candidate: string,
@@ -119,9 +132,26 @@ export async function POST(req: Request) {
     );
   }
 
-  const { messages, model, webSearch: webSearchRequested } = parsedBody.data;
+  const {
+    message,
+    messages,
+    chatId,
+    model,
+    webSearch: webSearchRequested,
+  } = parsedBody.data;
 
-  const uiMessages = messages as UIMessage[];
+  // Build the messages array
+  let uiMessages: UIMessage[];
+
+  if (message && chatId) {
+    // Load previous messages from persistence (we'll implement this on client side using SQLite)
+    // For now, just use the single message
+    uiMessages = [message as UIMessage];
+  } else if (messages) {
+    uiMessages = messages as UIMessage[];
+  } else {
+    uiMessages = message ? [message as UIMessage] : [];
+  }
 
   const resolvedModel: (typeof MODEL_WHITELIST)[number] =
     model && isAllowedModel(model) ? model : DEFAULT_MODEL;
@@ -140,12 +170,6 @@ Verification process:
 3. ${shouldUseWebSearch ? "Use the web search tool to locate reliable and current sources." : "Do not use external search tools for this response; rely solely on your trained knowledge and make it clear that no external sources were consulted."}
 4. Compare the information found and evaluate its reliability.
 5. Issue a clear conclusion about the veracity of the fact.
-
-Evaluation criteria:
-- TRUE: the statement is supported by multiple reliable sources.
-- FALSE: there is solid evidence that contradicts the statement.
-- PARTIALLY TRUE: only some aspects are correct.
-- INSUFFICIENT INFORMATION: there is no conclusive evidence.
 
 When responding, consider the following:
 - Explanation: describe the findings clearly.
@@ -174,5 +198,11 @@ Current user: ${displayName}.`;
       "Content-Encoding": "none",
     },
     sendSources: shouldUseWebSearch,
+    originalMessages: uiMessages,
+    // Generate server-side IDs for persistence
+    generateMessageId: createIdGenerator({
+      prefix: "msg",
+      size: 16,
+    }),
   });
 }

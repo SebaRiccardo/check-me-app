@@ -5,13 +5,11 @@ import type {
 } from "@/types/verification";
 import { useContext, useState } from "react";
 import {
-
   VerificationsContext,
   type VerificationWithProfile,
 } from "@/providers/verifications-provider";
 
 export type { VerificationWithProfile };
-
 
 /**
  * Hook para acceder al contexto de verificaciones
@@ -28,11 +26,9 @@ export function useVerificationsContext() {
   return context;
 }
 
-
 export function useVerifications() {
   return useVerificationsContext();
 }
-
 
 export function useCreateVerification() {
   const { createVerification, error } = useVerificationsContext();

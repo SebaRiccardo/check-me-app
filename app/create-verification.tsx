@@ -35,12 +35,7 @@ export default function CreateVerificationModal() {
             Comparte lo que sabes con la comunidad
           </Text>
         </View>
-               <TouchableOpacity
-     
-          className=" p-4"
-        >
-         
-        </TouchableOpacity>
+        <TouchableOpacity className=" p-4"></TouchableOpacity>
       </View>
       <CreateVerificationFormContent onSuccess={handleSuccess} useScrollView />
     </View>

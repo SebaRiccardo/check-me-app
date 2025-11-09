@@ -94,16 +94,15 @@ export function VerificationsProvider({
   /**
    * Obtiene todas las verificaciones con sus perfiles
    */
-  const fetchVerifications = useCallback(
-    async (isRefreshing?: boolean) => {
-      try {
-        if (!isRefreshing) setIsLoading(true);
-        setError(null);
+  const fetchVerifications = useCallback(async (isRefreshing?: boolean) => {
+    try {
+      if (!isRefreshing) setIsLoading(true);
+      setError(null);
 
-        const { data, error: fetchError } = await supabase
-          .from("verifications")
-          .select(
-            `
+      const { data, error: fetchError } = await supabase
+        .from("verifications")
+        .select(
+          `
           *,
           profiles!verifications_user_id_fkey1 (
             avatar_url,
@@ -111,21 +110,19 @@ export function VerificationsProvider({
             username
           )
         `,
-          )
-          .order("created_at", { ascending: false });
+        )
+        .order("created_at", { ascending: false });
 
-        if (fetchError) throw fetchError;
+      if (fetchError) throw fetchError;
 
-        setVerifications(data || []);
-      } catch (err) {
-        setError(err as Error);
-        console.error("Error fetching verifications:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [],
-  );
+      setVerifications(data || []);
+    } catch (err) {
+      setError(err as Error);
+      console.error("Error fetching verifications:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   /**
    * Suscribe a cambios en tiempo real y actualiza el estado local
@@ -286,9 +283,7 @@ export function VerificationsProvider({
 
         // Si no está suscrito, actualizar manualmente el estado
         if (!isSubscribed) {
-          setVerifications((prev) =>
-            prev.map((v) => (v.id === id ? data : v)),
-          );
+          setVerifications((prev) => prev.map((v) => (v.id === id ? data : v)));
         }
 
         return data;
@@ -378,4 +373,3 @@ export function VerificationsProvider({
     </VerificationsContext.Provider>
   );
 }
-
