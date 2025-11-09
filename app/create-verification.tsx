@@ -20,7 +20,7 @@ export default function CreateVerificationModal() {
       style={{ paddingBottom: insets.bottom, paddingTop: insets.top }}
     >
       {/* Header */}
-      <View className="px-6 pb-4 pt-4 flex-row items-center justify-between">
+      <View className="px-4 pb-2 pt-4 flex-row items-center justify-between">
         <TouchableOpacity
           onPress={() => router.back()}
           className=" p-2 bg-gray-100 rounded-full"
@@ -35,6 +35,12 @@ export default function CreateVerificationModal() {
             Comparte lo que sabes con la comunidad
           </Text>
         </View>
+               <TouchableOpacity
+     
+          className=" p-4"
+        >
+         
+        </TouchableOpacity>
       </View>
       <CreateVerificationFormContent onSuccess={handleSuccess} useScrollView />
     </View>

@@ -1,208 +1,101 @@
 import { supabase } from "@/lib/supabase/supabase";
 import type {
-  Verification,
   VerificationInsert,
   VerificationUpdate,
 } from "@/types/verification";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
+import {
 
-export type VerificationWithProfile = Verification & {
-  profiles: {
-    avatar_url: string | null;
-    full_name: string | null;
-    username: string | null;
-  } | null;
-};
+  VerificationsContext,
+  type VerificationWithProfile,
+} from "@/providers/verifications-provider";
+
+export type { VerificationWithProfile };
+
+
+/**
+ * Hook para acceder al contexto de verificaciones
+ */
+export function useVerificationsContext() {
+  const context = useContext(VerificationsContext);
+
+  if (context === undefined) {
+    throw new Error(
+      "useVerificationsContext debe usarse dentro de un VerificationsProvider",
+    );
+  }
+
+  return context;
+}
+
 
 export function useVerifications() {
-  const [verifications, setVerifications] = useState<VerificationWithProfile[]>(
-    [],
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-
-  const fetchVerifications = async (isRefreshing?: boolean) => {
-    try {
-      if (!isRefreshing) setIsLoading(true);
-      setError(null);
-
-      const { data, error: fetchError } = await supabase
-        .from("verifications")
-        .select(
-          `
-          *,
-          profiles!verifications_user_id_fkey1 (
-            avatar_url,
-            full_name,
-            username
-          )
-        `,
-        )
-        .order("created_at", { ascending: false });
-
-      if (fetchError) throw fetchError;
-
-      setVerifications(data || []);
-    } catch (err) {
-      setError(err as Error);
-      console.error("Error fetching verifications:", err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchVerifications();
-
-    // Subscribe to realtime changes
-    const channel = supabase
-      .channel("verifications-changes")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "verifications",
-        },
-        () => {
-          fetchVerifications();
-        },
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
-
-  return {
-    verifications,
-    isLoading,
-    error,
-    refetch: () => fetchVerifications(true),
-  };
+  return useVerificationsContext();
 }
+
 
 export function useCreateVerification() {
+  const { createVerification, error } = useVerificationsContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  const createVerification = async (
+  const create = async (
     verification: VerificationInsert,
   ): Promise<VerificationWithProfile | null> => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const { data, error: createError } = await supabase
-        .from("verifications")
-        .insert(verification)
-        .select(
-          `
-          *,
-          profiles!verifications_user_id_fkey1 (
-            avatar_url,
-            full_name,
-            username
-          )
-        `,
-        )
-        .single();
-
-      if (createError) throw createError;
-
-      return data;
-    } catch (err) {
-      setError(err as Error);
-      console.error("Error creating verification:", err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    const result = await createVerification(verification);
+    setIsLoading(false);
+    return result;
   };
 
   return {
-    createVerification,
+    createVerification: create,
     isLoading,
     error,
   };
 }
 
+/**
+ * Hook para actualizar verificaciones
+ * @deprecated Usa useVerificationsContext().updateVerification directamente
+ */
 export function useUpdateVerification() {
+  const { updateVerification, error } = useVerificationsContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  const updateVerification = async (
+  const update = async (
     id: string,
     updates: VerificationUpdate,
   ): Promise<VerificationWithProfile | null> => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const { data, error: updateError } = await supabase
-        .from("verifications")
-        .update(updates)
-        .eq("id", id)
-        .select(
-          `
-          *,
-          profiles!verifications_user_id_fkey1 (
-            avatar_url,
-            full_name,
-            username
-          )
-        `,
-        )
-        .single();
-
-      if (updateError) throw updateError;
-
-      return data;
-    } catch (err) {
-      setError(err as Error);
-      console.error("Error updating verification:", err);
-      return null;
-    } finally {
-      setIsLoading(false);
-    }
+    setIsLoading(true);
+    const result = await updateVerification(id, updates);
+    setIsLoading(false);
+    return result;
   };
 
   return {
-    updateVerification,
+    updateVerification: update,
     isLoading,
     error,
   };
 }
 
+/**
+ * Hook para eliminar verificaciones
+ * @deprecated Usa useVerificationsContext().deleteVerification directamente
+ */
 export function useDeleteVerification() {
+  const { deleteVerification, error } = useVerificationsContext();
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<Error | null>(null);
 
-  const deleteVerification = async (id: string): Promise<boolean> => {
-    try {
-      setIsLoading(true);
-      setError(null);
-
-      const { error: deleteError } = await supabase
-        .from("verifications")
-        .delete()
-        .eq("id", id);
-
-      if (deleteError) throw deleteError;
-
-      return true;
-    } catch (err) {
-      setError(err as Error);
-      console.error("Error deleting verification:", err);
-      return false;
-    } finally {
-      setIsLoading(false);
-    }
+  const remove = async (id: string): Promise<boolean> => {
+    setIsLoading(true);
+    const result = await deleteVerification(id);
+    setIsLoading(false);
+    return result;
   };
 
   return {
-    deleteVerification,
+    deleteVerification: remove,
     isLoading,
     error,
   };

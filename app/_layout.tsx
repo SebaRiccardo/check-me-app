@@ -14,6 +14,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import AuthProvider from "@/providers/auth-provider";
 import { QueryProvider } from "@/providers/query-provider";
+import { VerificationsProvider } from "@/providers/verifications-provider";
 import { SplashScreenController } from "@/components/splash-screen-controller";
 export {
   // Catch any errors thrown by the Layout component.
@@ -30,10 +31,11 @@ function RootNavigator() {
         <Stack.Screen
           name="create-verification"
           options={{
-            presentation: "modal",
+            presentation: "containedModal",
             headerShown: false,
             headerTitle: "Nueva Verificación",
             headerBackTitle: "Cancelar",
+            animation: "slide_from_bottom",
           }}
         />
       </Stack.Protected>
@@ -55,8 +57,10 @@ export default function RootLayout() {
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
         <QueryProvider>
           <AuthProvider>
-            <SplashScreenController />
-            <RootNavigator />
+            <VerificationsProvider autoSubscribe={true} autoFetch={true}>
+              <SplashScreenController />
+              <RootNavigator />
+            </VerificationsProvider>
           </AuthProvider>
         </QueryProvider>
         <PortalHost />

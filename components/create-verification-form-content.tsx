@@ -234,7 +234,7 @@ export function CreateVerificationFormContent({
           </Text>
         </View>
       </ScrollView>
-      <View className="sticky bottom-0">
+      <View className="sticky bottom-0 pt-2">
         <Button
           onPress={handleSubmit(onSubmit)}
           disabled={isLoading || isUploadingImage}

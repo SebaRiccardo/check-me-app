@@ -3,6 +3,23 @@ import { streamText, UIMessage, convertToModelMessages, stepCountIs } from "ai";
 import { createClient } from "@supabase/supabase-js";
 import { Database } from "@/lib/supabase/database.types";
 import { webSearch } from "@/lib/exa/search-tool";
+import { z } from "zod";
+
+const MODEL_WHITELIST = ["gemini-2.0-flash", "gemini-2.5-flash"] as const;
+const DEFAULT_MODEL = MODEL_WHITELIST[0];
+
+const requestSchema = z.object({
+  messages: z.array(z.unknown()).min(1, {
+    message: "Debes proporcionar al menos un mensaje",
+  }),
+  model: z.string().optional(),
+  webSearch: z.boolean().optional(),
+});
+
+const isAllowedModel = (
+  candidate: string,
+): candidate is (typeof MODEL_WHITELIST)[number] =>
+  MODEL_WHITELIST.includes(candidate as (typeof MODEL_WHITELIST)[number]);
 
 export async function POST(req: Request) {
   // Extraer el token de autorización del header
@@ -71,42 +88,84 @@ export async function POST(req: Request) {
     );
   }
 
-  // Usuario autenticado, procesar la solicitud del chat
-  const { messages }: { messages: UIMessage[] } = await req.json();
+  const body = await req.json().catch(() => null);
+
+  if (!body) {
+    return new Response(
+      JSON.stringify({
+        error: "Solicitud inválida",
+        message: "El cuerpo de la solicitud debe ser JSON válido.",
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  const parsedBody = requestSchema.safeParse(body);
+
+  if (!parsedBody.success) {
+    return new Response(
+      JSON.stringify({
+        error: "Solicitud inválida",
+        message: "Los datos enviados no cumplen con el formato esperado.",
+        detalles: parsedBody.error.flatten(),
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      },
+    );
+  }
+
+  const { messages, model, webSearch: webSearchRequested } = parsedBody.data;
+
+  const uiMessages = messages as UIMessage[];
+
+  const resolvedModel: (typeof MODEL_WHITELIST)[number] =
+    model && isAllowedModel(model) ? model : DEFAULT_MODEL;
+  const shouldUseWebSearch = webSearchRequested ?? true;
+  const displayName =
+    typeof user.user_metadata.full_name === "string" &&
+    user.user_metadata.full_name.trim().length > 0
+      ? user.user_metadata.full_name
+      : "usuario verificado";
+
+  const systemPrompt = `You are an assistant specialized in fact-checking. Your mission is to help users verify what they are asking you.
+
+Verification process:
+1. Carefully analyze the user's question.
+2. Identify the key elements that require verification.
+3. ${shouldUseWebSearch ? "Use the web search tool to locate reliable and current sources." : "Do not use external search tools for this response; rely solely on your trained knowledge and make it clear that no external sources were consulted."}
+4. Compare the information found and evaluate its reliability.
+5. Issue a clear conclusion about the veracity of the fact.
+
+Evaluation criteria:
+- TRUE: the statement is supported by multiple reliable sources.
+- FALSE: there is solid evidence that contradicts the statement.
+- PARTIALLY TRUE: only some aspects are correct.
+- INSUFFICIENT INFORMATION: there is no conclusive evidence.
+
+When responding, consider the following:
+- Explanation: describe the findings clearly.
+
+Always maintain a professional, objective, and impartial tone and avoid personal opinions. Mention any contradictions found. Respond exclusively in spanish and avoid innecesary foreign terms.
+
+Current user: ${displayName}.`;
 
   const result = streamText({
-    model: google("gemini-2.0-flash"),
-    messages: convertToModelMessages(messages),
-    system: `You are a specialized fact-checking agent. Your main job is to determine if the claims provided by the user are true or false.
-
-VERIFICATION PROCESS:
-1. Carefully analyze the user's claim
-2. Identify key elements that need to be verified
-3. Use the web search tool to find reliable sources
-4. Cross-reference information from multiple sources
-5. Provide a clear response about the veracity of the fact
-
-EVALUATION CRITERIA:
-- TRUE: The claim is supported by multiple reliable sources
-- FALSE: The claim is contradicted by solid evidence
-- PARTIALLY TRUE: Some aspects are correct, others are not
-- INSUFFICIENT INFORMATION: There is not enough evidence to determine veracity
-
-RESPONSE FORMAT:
-- Status: [TRUE/FALSE/PARTIALLY TRUE/INSUFFICIENT INFORMATION]
-- Explanation: Detailed description of findings
-- Sources: Links or references used for verification
-- Additional context: Relevant information the user should know
-
-Always be objective, impartial and base your conclusions only on verifiable evidence. If you find contradictory information, mention the different perspectives.
-
-Important: Responde always in Spanish with some level of formatily, even the status values must be in spanish.
-
-Current user: ${user.user_metadata.full_name}`,
-    tools: {
-      webSearch,
-    },
-    stopWhen: stepCountIs(5),
+    model: google(resolvedModel),
+    messages: convertToModelMessages(uiMessages),
+    system: systemPrompt,
+    ...(shouldUseWebSearch
+      ? {
+          tools: {
+            webSearch,
+          },
+          stopWhen: stepCountIs(5),
+        }
+      : {}),
   });
 
   return result.toUIMessageStreamResponse({
@@ -114,5 +173,6 @@ Current user: ${user.user_metadata.full_name}`,
       "Content-Type": "application/octet-stream",
       "Content-Encoding": "none",
     },
+    sendSources: shouldUseWebSearch,
   });
 }

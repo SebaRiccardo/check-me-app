@@ -8,16 +8,19 @@ export const webSearch = tool({
     query: z.string().min(1).max(100).describe("The search query"),
   }),
   execute: async ({ query }) => {
-    const { results } = await exa.search(query, {
-      numResults: 3,
+    const { results,costDollars } = await exa.search(query, {
+      numResults: 5,
       category: "news",
-      type: "deep",
+      type: "fast",
       userLocation: "AR",
     });
+    console.log(`Web search cost: $${costDollars?.total}`);
+    console.log(`Neural cost: $${costDollars?.search?.neural}`);
+    console.log(`Contents cost: $${costDollars?.contents?.text}`);
     return results.map((result) => ({
       title: result.title,
       url: result.url,
-      content: result.text.slice(0, 1000), // take just the first 1000 characters
+      content: result.text.slice(0, 2000), // take just the first 2000 characters
       publishedDate: result.publishedDate,
     }));
   },

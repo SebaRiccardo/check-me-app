@@ -15,12 +15,12 @@ export const generateAPIUrl = (relativePath: string) => {
 
     if (!hostUri) {
       // Fallback para cuando hostUri no esté disponible
-      console.warn("hostUri no disponible, usando localhost");
+      //console.warn("hostUri no disponible, usando localhost");
       return `http://localhost:8081${path}`;
     }
 
     const origin = `http://${hostUri}`;
-    console.log("URL generada:", { origin, path, full: origin.concat(path) });
+    //console.log("URL generada:", { origin, path, full: origin.concat(path) });
     return origin.concat(path);
   }
 

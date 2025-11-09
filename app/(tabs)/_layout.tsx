@@ -13,14 +13,17 @@ import {
 } from "lucide-react-native";
 import { useColorScheme } from "nativewind";
 import { Pressable, View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TabLayout() {
   const { colorScheme } = useColorScheme();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
+        
         headerShown: false,
         tabBarActiveTintColor: colorScheme === "dark" ? "#3B9EF3" : "#1DA1F2",
         tabBarInactiveTintColor: colorScheme === "dark" ? "#71767B" : "#536471",
@@ -28,7 +31,7 @@ export default function TabLayout() {
           backgroundColor: colorScheme === "dark" ? "#000000" : "#FFFFFF",
           borderTopColor: colorScheme === "dark" ? "#2F3336" : "#E7E9EA",
           borderTopWidth: 1,
-          height: 60,
+      
         },
       }}
     >
@@ -63,7 +66,7 @@ export default function TabLayout() {
                 flex: 1,
                 justifyContent: "center",
                 alignItems: "center",
-                marginTop: -20,
+                marginTop: -35,
               }}
             >
               <View
