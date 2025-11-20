@@ -4,11 +4,11 @@
   "version": "1.0.0",
   "scripts": {
     "start": "expo start  --dev-client",
-    "ios": "expo start -c --ios",
     "web": "expo start -c --web",
     "prebuild:clean": "pnpm expo prebuild --clean",
     "prebuild": "pnpm expo prebuild",
     "android": "expo run:android --variant debugOptimized",
+    "ios" :"expo run:ios --device",
     "clean": "rm -rf .expo node_modules",
     "doctor": "npx expo-doctor@latest",
     "build:dev:android": "eas build --profile development --platform android",
